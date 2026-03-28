@@ -264,3 +264,276 @@ BBBの内皮細胞膜は他の細胞膜と比較して**コレステロール含
 12. Kim HW et al. Explaining blood-brain barrier permeability by synergistic effect on molecular substructures. 2025.
 13. Guo Z et al. Delta PSA: A new metric for conformational dynamics underlying macrocyclic peptide permeability. *bioRxiv*. 2026.
 14. Spielvogel CP et al. Enhancing blood-brain barrier penetration prediction by machine learning. *J Chem Inf Model*. 2025;65:2773-2784.
+
+---
+
+# English Translation
+
+---
+
+# “Unestablished elements” common to substances passing through the BBB — beyond the traditional Lipinski rule
+
+## Introduction
+
+Although traditional indicators for predicting BBB penetration (molecular weight, logP, number of hydrogen bonds, PSA) are widely established, there are many phenomena that cannot be explained by these alone. Below, we will summarize common elements that have attracted attention in recent research but have not yet been fully established.
+
+---
+
+## 1. Cross-Sectional Area (A_D) — Intramembrane conformation
+
+### Overview
+A series of studies by Seelig (1994, 1998, 2007) showed that the cross-sectional area (A_D) in the membrane-bound conformation of molecules as they interact with lipid membranes is a major determinant of BBB penetration.
+
+### Findings
+- Molecules with **A_D < 70 Å²**: can cross the BBB by passive diffusion (influx exceeds P-gp exit rate)
+- Molecules with **A_D > 80 Å²**: cannot cross the BBB (output exceeds inflow)
+- Molecules with A_D ≈ 50 Å² cross the BBB most easily
+
+### Why “unestablished”?
+- A_D requires surface activity measurements and special experiments, and is not a general calculation descriptor
+- Contains information independent of molecular weight and logP
+- Depends on 3D structure and cannot be easily predicted from 2D structure
+- Based on a physical model in which molecules are distributed across the membrane against lateral bilayer pressure (π_bi ≈ 34 mN/m), which is more physically accurate than the simple logP model.
+
+### Importance: ★★★★★
+> **Seelig's assertion that ``the width of the molecule in the membrane, not molecular weight or lipid solubility, is the most essential determinant of permeation'' has the potential to fundamentally change the traditional drug design paradigm.
+
+---
+
+## 2. Collision Cross Section (CCS)
+
+### Overview
+Collision cross section (CCS), measured by ion mobility mass spectrometry (IM-MS), was first proposed in 2019 by Guntner et al. as a new descriptor of BBB permeability.
+
+### Findings (Guntner et al., Sci Rep, 2019; Pharmaceutics, 2021)
+- **Strong correlation** found between CCS and BBB permeability for 46 pharmacologically active molecules
+- CCS combines mass, structure, volume, branching and flexibility information into a single measurable parameter
+- BBB+ compounds (passable) have a statistically significantly lower CCS than BBB- compounds (not passable)
+- Trends were also confirmed in large-scale evaluations (several thousand compounds)
+
+### Why “unestablished”?
+- A very new descriptor first proposed in 2019
+- The difference in reliability between calculated CCS and measured CCS has not been verified
+- Insufficient quantification of added value to existing logP/MW/PSA models
+- Requires dedicated mass spectrometer
+
+### Importance: ★★★★☆
+> CCS is a measurable physical quantity that reflects the 3D shape of molecules and is conceptually related to A_D.
+
+---
+
+## 3. Chameleonicity / Molecular Chameleonic Behavior
+
+### Overview
+A "molecular chameleon" is a molecule that has the ability to dynamically change its conformation and expose/shield polar functional groups depending on the polarity of its environment (Nature Reviews Chemistry, 2023).
+
+### Findings
+- **Aqueous environment** (in blood): Expose polar groups → ensure solubility
+- **Non-polar environment** (in lipid membrane): Forms intramolecular hydrogen bonds to shield polar groups → ensure membrane permeability
+- **ΔPSA (Delta PSA)**: Quantified as the difference in PSA between polar and non-polar environments (2026, Guo et al.)
+- Macrocyclic peptides such as cyclosporin A are a typical example, but **Similar behavior has been reported with small molecule drugs**
+- Many BBB-passing drugs have “weak amphiphilicity” and can be adapted to suit the environment.
+
+### Why “unestablished”?
+- Quantitative measures of chameleonicity are not unified
+- Requires MD (molecular dynamics) simulation, not suitable for high-throughput screening
+- Mainly studied with large molecules in the bRo5 (beyond Rule of Five) region, with limited application to conventional small molecule CNS drugs
+
+### Importance: ★★★★☆
+> The concept of “environmental adaptability” common to BBB-crossing drugs is a dynamic property that cannot be captured by static physicochemical descriptors.
+
+---
+
+## 4. Desolvation Energy
+
+### Overview
+Fong (2015) proposed that **desolvation energy** and **dipole moment** are important factors that have traditionally been overlooked in the BBB permeability model.
+
+### Findings
+- log PS (BBB permeation rate) depends on 4 factors:
+  1. **Desolvation energy** (energy to shed hydration shell)
+  2. Lipophilicity
+  3. Molecular volume
+  4. **dipole moment**
+- "Desolvation": a process in which molecules release hydrated water molecules in order to migrate from the aqueous phase to the lipid membrane
+- Molecules that cross the BBB have **low desolvation costs** (relatively weak interactions with water)
+
+### Why “unestablished”?
+- Accurate calculation of desolvation energy requires QM (quantum chemical calculation) or MD
+- No standard method for direct experimental measurement has been established.
+- Information partially included in logP but not fully reflected
+
+### Importance: ★★★★☆
+> Desolvation is one of the rate-limiting steps in membrane permeation, and may explain differences in BBB permeability that cannot be explained by logP alone.
+
+---
+
+## 5. Dipole Moment & Polarizability
+
+### Overview
+The asymmetry of a molecule's charge distribution (dipole moment) and its responsiveness to an external electric field (polarizability) affect BBB penetration.
+
+### Findings
+- Montgomery & Lemkul (2024): MD simulation using a polarizable force field (Drude oscillator) systematically quantifies the induced dipole effect during membrane permeation for the first time
+- The dipoles of molecules respond dynamically as they pass through the **dielectric gradient** (polar on the outside, non-polar on the inside) of a lipid bilayer.
+- **Molecules with high polarizability have a large stabilization energy within the membrane and may be advantageous for permeation**
+- However, the effect varies depending on the molecule and is not a simple linear relationship.
+
+### Why “unestablished”?
+- Simulations with polarizable force fields have only recently become possible.
+- Effects that cannot be captured by the fixed charge model (conventional MD)
+- Lack of data on BBB-specific membrane composition
+
+### Importance: ★★★☆☆
+> It is physically reasonable that electron cloud flexibility may contribute to membrane penetration, but its usefulness as a practical descriptor is uncertain.
+
+---
+
+## 6. LUMO (lowest unoccupied orbital) energy
+
+### Overview
+Analysis of chromatographic data by Wanat & Brzezinska (2023) showed that LUMO energy is a significant descriptor in BBB permeability prediction models.
+
+### Findings
+- LUMO (Lowest Unoccupied Molecular Orbital) molecules with low energy are highly electrophilic
+- **LUMO energy is extracted as a significant factor** along with HBA, HBD, and physiological charge in multiple log BB regression models
+- The ability of a molecule to accept electrons may influence its interaction pattern with the membrane.
+
+### Why “unestablished”?
+- Statistical significance shown in QSAR model, but poor interpretation of physical mechanism
+- May not be selected by other models (dataset dependence)
+- Frontier orbital energy strongly depends on calculation level
+
+### Importance: ★★★☆☆
+
+---
+
+## 7. Balance with P-gp (P-glycoprotein) excretion — “Net flux” concept
+
+### Overview
+BBB endothelial cells express ABC transporters such as P-glycoprotein (P-gp/MDR1), which actively excrete drugs that enter the brain. BBB passage is determined by the balance between passive inflow and active outflow (net flux), rather than a simple "in/out" situation.
+
+### Findings (Seelig, 2007; Dolghih & Jacobson, 2012)
+- The majority of CNS drugs are **intrinsic substrates** of P-gp
+- Molecules that can pass through the BBB are "passive inflow rate > exit rate due to P-gp"
+- **A_D < 70 Å²** and low to moderate charge → inflow > outflow → passing through BBB
+- Combined prediction of P-gp emission and passive permeation is better than either alone
+
+### Why “unestablished”?
+- Difficult to predict P-gp substrate properties (diverse substrate structures)
+- In addition to P-gp, there are other excretory transporters such as BCRP and MRP.
+- Quantitative prediction of net flux requires accurate estimation of both velocities
+
+### Importance: ★★★★★
+> **The perspective that passage through the BBB is not the result of successful passive diffusion, but rather the result of competition between inflow and emission** fundamentally changes the conventional binary thinking of ``pass or not pass.''
+
+---
+
+## 8. 3D-PSA (three-dimensional polar surface area) and electrostatic potential map
+
+### Overview
+While traditional TPSA (Topological PSA) is an approximation based on the 2D structure, 3D-PSA is the polar surface area calculated from the actual 3D structure of the molecule.
+
+### Findings (Shityakov et al., 2013)
+- 3D-PSA has very high correlation with log BB with R² = 0.92 (RMSD = 0.29)
+- Higher prediction accuracy than TPSA and SA-2D
+- Polar surfaces calculated from electrostatic potential maps more accurately reflect interactions with membranes
+
+### Why “unestablished”?
+- 3D structure optimization required (conformation dependent)
+- Computational cost is higher than TPSA
+- Conformational differences in aqueous solution vs. membrane (chameleonicity) are not taken into account
+
+### Importance: ★★★★☆
+
+---
+
+## 9. Synergistic Substructural Effects
+
+### Overview
+Kim et al. (2025) showed that **synergistic effects** of molecular substructures influence BBB permeability.
+
+### Findings
+- The **combination (synergistic effect)** determines BBB+/BBB-, not the simple addition of the contributions of individual functional groups
+- Substructure group with positive synergy: aromatic ring + tertiary amine + halogen
+- Negative synergistic effect: large number of OH groups + carboxyl groups + sugar chain structure
+- Explainable AI (XAI) enables visualization of synergies
+
+### Why “unestablished”?
+- Substructure definition and division method is model dependent
+- Difficult to generalize interpretation
+- Correspondence with physicochemical mechanism is unclear
+
+### Importance: ★★★☆☆
+
+---
+
+## 10. Interaction with Lateral Bilayer Pressure
+
+### Overview
+The endothelial cell membranes of the BBB have a higher cholesterol content and dense lipid packing than other cell membranes. As a result, the membrane has a high internal lateral pressure profile and a high resistance to molecular penetration.
+
+### Findings
+- BBB membrane lateral pressure π_bi ≈ 34 ± 4 mN/m (Seelig, Fischer & Gottschlich, 1998)
+- Partition coefficient into the membrane: K_lw = const · K_aw · exp(-A_D · π_bi / kT)
+  - The distribution decreases exponentially as A_D (cross-sectional area) increases
+  - In other words, **whether or not it can be inserted against the lateral pressure of the membrane** determines permeability.
+- BBB-crossing drugs have molecular shapes that can resist this high lateral pressure.
+
+### Why “unestablished”?
+- Difficult to directly measure membrane lateral pressure
+- Large variations due to differences in membrane composition (type of blood vessel, disease state)
+- Requires coarse-grained MD to reproduce computationally
+
+### Importance: ★★★★☆
+> The viewpoint that ``The BBB is different from other biological membranes in that it has high lateral pressure, and the selectivity of molecules is determined by the interaction between lateral pressure and cross-sectional area'' provides a physical explanation of BBB specificity.
+
+---
+
+## Summary: Priority of unestablished elements
+
+| Ranking | Elements | Novelty | Physical validity | Practical feasibility | Overall evaluation |
+|---|---|---|---|---|---|
+| 1 | **Membrane cross-sectional area (A_D)** | Medium (proposed in 1994) | Extremely high | Low (difficult to measure) | ★★★★★ |
+| 2 | **Net flux (inflow vs. discharge)** | Medium | Very high | Medium | ★★★★★ |
+| 3 | **Collision Cross Section (CCS)** | High (2019) | High | Medium (IM-MS required) | ★★★★☆ |
+| 4 | **Chameleon (ΔPSA)** | High | High | Low (MD required) | ★★★★☆ |
+| 5 | **Desolvation Energy** | Medium | High | Low | ★★★★☆ |
+| 6 | **3D-PSA** | Medium | High | Medium | ★★★★☆ |
+| 7 | **Interaction with transverse membrane pressure** | Medium | Very high | Low | ★★★★☆ |
+| 8 | **Dipole moment/polarizability** | Medium | Medium to high | Medium | ★★★☆☆ |
+| 9 | **LUMO Energy** | Medium | Medium | High | ★★★☆☆ |
+| 10 | **Substructure synergy** | High | Low to Medium | Medium | ★★★☆☆ |
+
+---
+
+## Conclusion: Candidates for “essential characteristics” common to BBB-passing substances
+
+The more essential common elements that go beyond the conventional understanding of "small size and high fat solubility" are:
+
+1. **Narrow molecular width in the membrane (A_D < 70 Å²)** — may determine BBB permeability more directly than molecular weight or logP. BBB-crossing drugs tend to adopt an "elongated" conformation when inserted into lipid membranes.
+
+2. **The ability to change its appearance depending on the environment (chameleon)** — Dynamic ability to display a hydrophilic surface in water and a hydrophobic surface in a membrane. BBB-crossing drugs tend to have self-shielding ability through intramolecular hydrogen bonding.
+
+3. **“Easy to give up water” (low desolvation costs)** — The rate-limiting step in membrane transfer is the release of the hydration shell, and BBB-crossing drugs have relatively weak water binding.
+4. **Being able to overcome the efflux pump** — Even if it is a P-gp substrate, it can pass if the passive inflow rate exceeds the efflux rate. Molecules with smaller cross-sections and lower charges win this competition.
+
+---
+
+## References
+
+1. Seelig A. A method to determine the ability of drugs to diffuse through the blood-brain barrier. *PNAS*. 1994;91(1):68-72.
+2. Fischer H, Gottschlich R, Seelig A. Blood-brain barrier permeation: molecular parameters governing passive diffusion. *J Membr Biol*. 1998;165:201-211.
+3. Seelig A. The role of size and charge for blood-brain barrier permeation of drugs and fatty acids. *J Mol Neurosci*. 2007;33:32-41.
+4. Guntner AS et al. Collision cross sections obtained with ion mobility mass spectrometry as new descriptor to predict blood-brain barrier permeation by drugs. *Sci Rep*. 2019;9:19182.
+5. Guntner AS et al. Large-scale evaluation of collision cross sections to investigate blood-brain barrier permeation of drugs. *Pharmaceutics*. 2021;13:2141.
+6. Ermondi G et al. Molecular chameleons in drug discovery. *Nat Rev Chem*. 2023.
+7. Fong CW. Permeability of the blood-brain barrier: molecular mechanism of transport of drugs. *J Membr Biol*. 2015;248:651-669.
+8. Montgomery JM, Lemkul JA. Quantifying induced dipole effects in small molecule permeation in a model phospholipid bilayer. *J Phys Chem B*. 2024;128:7385-7400.
+9. Wanat K, Brzezinska E. Chromatographic data in statistical analysis of BBB permeability indices. *Membranes*. 2023;13:623.
+10. Dolghih E, Jacobson MP. Predicting efflux ratios and blood-brain barrier penetration from chemical structure. *ACS Chem Neurosci*. 2012;4:361-367.
+11. Shityakov S et al. Analysing molecular polar surface descriptors to predict blood-brain barrier permeation. *IJCBDD*. 2013;6(1/2):146-156.
+12. Kim HW et al. Explaining blood-brain barrier permeability by synergistic effect on molecular substructures. 2025.
+13. Guo Z et al. Delta PSA: A new metric for conformational dynamics underlying macrocyclic peptide permeability. *bioRxiv*. 2026.
+14. Spielvogel CP et al. Enhancing blood-brain barrier penetration prediction by machine learning. *J Chem Inf Model*. 2025;65:2773-2784.
+

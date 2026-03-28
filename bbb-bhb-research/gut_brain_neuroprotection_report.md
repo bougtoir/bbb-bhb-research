@@ -330,3 +330,336 @@
 20. Monai H et al. "Immediate glucose signaling transmitted via the vagus nerve in gut-brain neural communication." *bioRxiv* (2024).
 21. Raya D et al. "Recent drug delivery systems targeting the gut-brain-microbiome axis." *Int. J. Pharm.* 680:125776 (2025).
 22. Williams RSB, Boison D, Masino SA, Rho JM. "Mechanisms of Ketogenic Diet Action." In: *Jasper's Basic Mechanisms of the Epilepsies*, 5th ed. (2024).
+
+---
+
+# English Translation
+
+---
+
+# Drug delivery via gut-brain relationship, enteral administration during resuscitation, and suppression of status epilepticus by ketogenic diet
+
+---
+
+## Table of Contents
+
+1. [BBB bypass drug delivery via Gut-Brain Axis] (#1-Drug delivery via Gut-Brain Axis)
+2. [Possibility of enteral tube administration in brain protection during resuscitation] (#2-Enteral tube administration during resuscitation)
+3. [Seizure suppressing effect of ketogenic diet on status epilepticus] (#3-Ketone diet and status epilepticus)
+4. [Comprehensive consideration] (#4-Comprehensive consideration)
+
+---
+
+## 1. Drug delivery through the gut-brain relationship — Possibility to “work” in the brain without passing through the BBB
+
+### 1.1 Conceptual background
+
+User's idea: **Even if it does not exceed the BBB, if it is delivered to the intestines undenatured, it may be able to affect the brain, regardless of bioavailability**.
+
+This idea has a direction that is consistent with research on the gut-brain axis (GBA), which has been rapidly elucidated in recent years. Below, we summarize the mechanisms by which drugs can affect brain function without physically passing through the BBB.
+
+### 1.2 Three major routes to bypassing the BBB
+
+#### Pathway A: Vagal Afferent Pathway
+
+- The vagus nerve is composed of **80% afferent fibers** (gut to brain direction) (Bonaz et al., Front. Neurosci., 2018)
+- Chemical signals in the intestinal tract are transmitted via the vagal afferent pathway to the nucleus tractus solitarius (NTS) → central autonomic nervous network**
+- Han et al. reported in Science in 2018: Demonstrating that stimulation of vagus nerve sensory neurons that innervate the intestines can induce midbrain dopamine release and condition reward behavior (Chan, Nat. Rev. Gastroenterol. Hepatol., 2025)
+- **Pharmacological significance**: Substances administered into the intestine can alter neurotransmission in the brain via the vagus nerve. No physical crossing of the BBB required
+
+#### Pathway B: Direct synaptic transmission by Neuropod Cells
+
+- **Neuropod cells** are a subtype of enteroendocrine cells discovered by Bohórquez et al. at Duke University (Kaelberer et al., Annu. Rev. Neurosci., 2020)
+- In addition to conventional hormone secretion, **forms a direct synaptic connection with the vagus nerve**
+- Uses glutamate as a synaptic neurotransmitter, enabling high-speed signal transmission in **milliseconds**
+- Monai et al. reported in 2024: After intragastric glucose infusion, the vagus nerve is immediately activated via SGLT1 in neuropod cells, and D1/D2 dopamine receptors in the frontal cortex respond (Monai et al., bioRxiv, 2024)
+- **Pharmacological significance**: If certain compounds stimulate neuropod cells in the intestinal tract, nerve signals can reach the brain "before the drug is absorbed into the bloodstream."
+
+#### Pathway C: Enteroendocrine cells (EEC) → Hormones/metabolites → Brain
+
+- Serotonin (5-HT), GLP-1, CCK, ghrelin, etc. secreted by enteroendocrine cells reach the brain through (a) vagal paracrine action or (b) hematogenous circulation.
+- **5-HT produced in the intestinal tract accounts for more than 90% of the whole body** and regulates serotonin neurons in the NTS → dorsal raphe nucleus via the vagus nerve afferent pathway (Hwang & Oh, Int. J. Mol. Sci., 2025)
+- Metabolites of intestinal bacteria (short-chain fatty acids, especially butyrate) promote serotonin synthesis and enhance vagus nerve activity
+- **Pharmacological significance**: Orally administered substances can indirectly affect brain function by changing the intestinal environment
+
+### 1.3 Scientific evaluation of “reaching the brain without BBB”
+
+| Aspects | Evaluation |
+|------|------|
+| **Theoretical validity** | ★★★★★ The anatomical basis of vagus nerve afferents and neuropod cells has been established |
+| **Preclinical Evidence** | ★★★★☆ Multiple groups demonstrate gut-to-brain signaling in mouse models |
+| **Clinical application results** | ★★☆☆☆ There are clinical cases in which GLP-1 receptor agonists (such as semaglutide) affect appetite and cognition via the gut-brain axis, but there are only a few clinical trials designed for "enteral drug delivery for brain protection" |
+| **Challenges** | Uncertainty in bioavailability, difficulty in quantifying signal strength, individual differences |
+
+### 1.4 Important note: Limits of “hitting”
+
+Regarding the user's hypothesis that "it can be attacked regardless of bioavailability":
+
+- **Positive aspect**: Nerve signaling through the vagus nerve does not require the drug molecule itself to cross the BBB. Chemical stimuli in the intestinal tract are transmitted to the brain as "information"
+- **Restrictive aspects**:
+  - Signals via the vagus nerve are primarily modulatory, which is qualitatively different from pharmacological effects that directly occupy specific receptors in the brain.
+  - Acute brain protection (e.g., preventing neuronal cell death after ischemia) often requires a certain concentration of drug to reach a target site in the brain
+  - However, systemic inflammation suppression via the **cholinergic anti-inflammatory pathway** can be achieved by the vagal efferents, which may contribute to brain protection.
+
+---
+
+## 2. Possibility of enteral administration in brain protection during resuscitation
+### 2.1 Current issues
+
+Currently, intravenous (IV) administration is the standard for administering brain protective drugs during resuscitation after cardiac arrest (after CPR/ROSC) in almost all cases. The ILCOR (International Liaison Committee on Resuscitation) 2024 review also identified limited evidence regarding neuroprotective pharmacotherapy as a “knowledge gap” (McGuigan et al., ILCOR CoSTR, 2024).
+
+### 2.2 Condition of the intestinal tract after cardiac arrest
+
+The following conditions occur after cardiac arrest:
+
+- **Systemic ischemia-reperfusion injury** extends to the intestinal tract
+- **Acute gastrointestinal injury (AGI)**: intestinal barrier breakdown, dysbiosis, and endotoxin-induced inflammation (Zhang et al., 2025)
+- Intestinal-derived macrophages are directly involved in brain injury through TREM1 signaling (Chang et al., Cell. Mol. Immunol., 2025)
+- After cardiac arrest, the **gut-to-brain axis of negative influence** is activated.
+
+### 2.3 Rationale and possibility of enteral administration
+
+#### 2.3.1 Evidence for early enteral nutrition
+- Retrospective cohort study using MIMIC-IV database (2024): Early enteral nutrition (EN) within 48 hours significantly improved 30-day survival compared with delayed EN in patients with cardiac arrest (HR = 0.779, 95% CI 0.611-0.994, p = 0.041) (Early EN study, PubMed 38962373)
+- Similar trends for 90 days and 180 days
+- Also reduced risk of ileus (4% vs 8%, OR = 0.461)
+- However, there was no significant difference in **neurological outcome** (51% vs 57%, p = 0.070)
+
+#### 2.3.2 Enteral administration of sodium butyrate
+
+- Zhang et al. (2025, Research Square): Administration of **sodium butyrate** (short chain fatty acid) in cardiac arrest/CPR rat model:
+  - Improve neurobehavioral recovery
+  - Preserves the integrity of the ileal epithelial tight junctions
+  - Remodeling intestinal flora (SCFA-producing bacteria↑, pathogenic bacteria↓)
+  - **Significantly reduces neuroinflammatory markers (IL-1α, NLRP3 inflammasome) in brain tissue**
+- This is direct evidence of neuroprotection via the gut-brain axis
+
+#### 2.3.3 Brain protective effect of ghrelin
+
+- Ghrelin is a peptide hormone produced primarily in the stomach
+- A **randomized clinical trial** is being conducted in patients with coma after cardiac arrest (PubMed 38709502, 2024)
+- Ghrelin may act protectively through the vagus nerve
+
+#### 2.3.4 Enteral administration of polydopamine
+
+- Sun et al. (Front. Cell. Infect. Microbiol., 2025): Demonstrates that the intestinal tract plays an important therapeutic role in the therapeutic mechanism of polydopamine for acute cerebral infarction
+- Neuroimmune interactions via the gut-brain axis contribute to brain protection
+
+### 2.4 Feasibility and challenges of enteral administration
+
+| Factors | Intravenous injection (current standard) | Enteral administration (proposed) |
+|------|----------------------|----------------------|
+| **Administration Rate** | Immediate | Delayed (time for absorption) |
+| **Intestinal perfusion during cardiac arrest** | — | Significantly reduced (biggest barrier) |
+| **Intestinal function after ROSC** | — | Malabsorption when AGI occurs |
+| **Signal via vagus nerve** | Unnecessary | Possibility of decreased vagus nerve activity |
+| **Ease of administration** | Requires IV access | Possible with nasogastric tube |
+| **Direct drug delivery to the brain** | Requires BBB passage | Not required (via nerve signals) |
+
+### 2.5 Professional evaluation
+**User's hypothesis is scientifically interesting, but there are significant barriers to practicality in acute resuscitation**:
+
+1. **Timing issue**: During and immediately after cardiac arrest, intestinal perfusion is extremely reduced, making both drug absorption and signal transmission uncertain.
+2. **However, in the subacute phase to recovery phase** after ROSC, enteral tube approach is quite reasonable. Sodium butyrate research targets this time frame
+3. **The reverse idea that “protecting the intestinal tract protects the brain”**: As shown by Chang et al. (2025), intestinal barrier breakdown → brain infiltration of intestinal-derived macrophages worsens brain damage, so maintaining the intestinal barrier itself becomes a brain protection strategy.
+4. **Most promising scenario**: How to add neuroprotective metabolites (butyrate, ketone bodies, etc.) to early enteral nutrition in the post-ROSC ICU
+
+---
+
+## 3. Seizure-inhibiting effect of ketogenic diet on status epilepticus
+
+### 3.1 Background
+
+Status epilepticus (SE) is defined as seizures lasting more than 5 minutes or recurrent seizures without recovery of consciousness. In particular, the following problems occur:
+
+- **Refractory SE (RSE)**: Does not respond to 1st and 2nd stage antiepileptic drugs
+- **Super refractory SE (SRSE)**: persists or recurs for more than 24 hours after initiation of anesthetic treatment
+
+Mortality rates are high, ranging from 20% to 57%, and neurological outcomes among survivors are poor.
+### 3.2 What is the ketogenic diet?
+
+The Ketogenic Diet (KD) is a high fat, low carbohydrate, and adequate protein diet that induces ketosis in the body.
+
+- **Classical KD**: Fat: (Carbohydrates + Protein) = 4:1
+- **Modified Atkins Diet (MAD)**: milder carbohydrate restriction
+- **Low Glycemic Index Diet (LGIT)**
+
+### 3.3 Clinical evidence of KD for SE in hospitalized patients
+
+#### 3.3.1 Adult SRSE — Prospective study in ICU (2025 latest)
+
+**Ren et al., Front. Neurol., 2025** (Xuanwu Hospital, Beijing):
+- Subjects: 12 SRSE patients in ICU (9 females, 3 males, median age 34 years)
+- Median SRSE duration before KD initiation: 21 days
+- **Result**:
+  - **SRSE disappears at 75% (9/12)**
+  - Median time to achieve ketosis: **1 day** after starting KD
+  - Median time to SRSE resolution: **3 days** (range 1-18 days) after KD initiation
+  - Side effects: mild metabolic acidosis, hypertriglyceridemia (manageable)
+
+#### 3.3.2 Adult RSE — a systematic review
+
+**Mahmoud et al., Epilepsia Open, 2020**：
+- Systematic review of KD use in adult SE patients
+- Integrate multiple retrospective studies
+- **Seizure resolution rate is approximately 70-80%**
+- The biggest barrier to starting KD is coadministration with propofol administration (lipid-containing)
+
+#### 3.3.3 Adult RSE — Retrospective Cohort Study
+
+**Francis et al., Neurocrit. Care, 2019**:
+- 11 adult RSE patients
+- **90.9% achieve ketosis within 1 day**
+- **RSE disappears at 72.7% (8/11)**
+
+#### 3.3.4 Adult SRSE — Multicenter Phase I/II Study
+
+**Cervenka et al., Neurology, 2017**:
+- First multicenter prospective study evaluating the safety and tolerability of KD for adult SRSE
+
+#### 3.3.5 Pediatric SRSE
+
+**Breu et al., Front. Neurol., 2021** (Medical University Vienna):
+- 8 pediatric PICU patients
+- KD administered as an add-on after standard treatment failure
+- Seizure resolution on EEG is used as the primary endpoint
+
+#### 3.3.6 Rationale for expanding KD indications
+
+**Kim et al., Neurotherapeutics, 2022**:
+- Retrospective cohort study of 140 RSE patients (including 32 in the KD group)
+- **Seizure resolution in 81% (28/32 patients) of KD group**
+- Moderation analysis shows that KD has a greater effect in patients with:
+  - Elderly people
+  - Patients with high seizure severity scores
+  - Patients on continuous intravenous anesthetic administration (CIVAD)
+  - SRSE patients
+- **Provides evidence of the neuroprotective effects of KD**
+
+#### 3.3.7 Standard procedure manual for ICU (latest 2025)
+
+**Neurological Research and Practice, 2025**：
+- KD's **Standard Procedure (SOP)** for SE in Adult ICU Patients Released
+- Co-authored by neurologists, intensivists, anesthesiologists, and clinical nutrition experts
+- Systematically defines the implementation procedure, indications, contraindications, monitoring and safety in the ICU of classical KD (4:1 ratio)
+- **KD has reached the stage where it is becoming recognized as a standard treatment**
+
+### 3.4 Mechanism of Action — Why does the ketogenic diet suppress seizures?
+
+#### 3.4.1 Main mechanism: Increase in GABA/glutamate ratio by β-hydroxybutyric acid (BHB)
+
+**Huang et al., Cell Discovery, 2024** (Nature series):
+- **BHB inhibits HDAC1/HDAC2** → H3K27 acetylation ↑ → Transcriptional upregulation of SIRT4 and GAD1
+- SIRT4 decarbamylates and inactivates glutamate dehydrogenase → glutamate is stored in GABA synthesis
+- GAD1 upregulation increases brain GABA/glutamate ratio → **Direct inhibition of excitability**
+- Single administration of BHB suppresses pentetrazole-induced epilepsy
+
+#### 3.4.2 Adenosine pathway
+
+**Boison, Curr. Opin. Neurol., 2017**:
+- KD changes adenosine metabolism and increases adenosine concentration in the brain
+- Antiepileptic effect mediated by adenosine A1 receptor
+- **One of the main mechanisms** of the antiepileptic effect of KD
+
+#### 3.4.3 Improving mitochondrial function
+
+- Ketone bodies are a more efficient energy substrate than glucose in brain mitochondria
+- Reduction of oxidative stress, stabilization of mitochondrial membrane potential
+- Maintaining ATP levels suppresses neuronal hyperexcitability
+
+#### 3.4.4 Inhibition of NLRP3 inflammasome
+
+- BHB directly inhibits NLRP3 inflammasome
+- Suppression of neuroinflammation → increase of seizure threshold
+- This pathway is particularly important in status epilepticus, where neuroinflammation contributes to the persistence of seizures.
+
+#### 3.4.5 Epigenetic effects
+
+- HDAC inhibition by BHB results in extensive epigenetic changes
+- Increased expression of antioxidant enzymes (SOD2, etc.)
+- Induction of long-term neuroprotective gene expression programs
+### 3.5 Evaluating user hypotheses
+
+**"Wouldn't it be effective to put a ketogenic diet on the diet of hospitalized patients with status epilepticus?"**
+
+| Evaluation items | Results |
+|----------|------|
+| **Justification of the hypothesis** | ★★★★★ **Already clinically proven** |
+| **Evidence level** | Prospective study/systematic review/SOP level (However, RCTs are limited) |
+| **Clinical practice status** | Currently used in major epilepsy centers around the world as a “last resort” for RSE/SRSE |
+| **Magnitude of Effect** | Seizure resolution rate 70-81% (consistent in multiple independent studies) |
+| **Rapidity of achieving ketosis** | Within 1 day in ICU (enteral/intravenous KD) |
+| **Time to seizure resolution** | Median 3 days |
+| **Safety** | Manageable side effects (metabolic acidosis, hyperlipidemia, hypoglycemia) |
+
+**Notable**: User intuition is completely scientifically sound and has already translated into clinical practice. A standard procedure (SOP) for adult ICUs will be announced in 2025, and it is expected that it will become more common in the future.
+
+### 3.6 Current challenges and future prospects
+
+1. **Lack of randomized controlled trials (RCTs)**: Most are observational studies/case series. Large-scale RCTs are needed
+2. **Concomitant use with propofol**: Propofol is dissolved in lipid emulsions and interferes with carbohydrate restriction. Need to switch to an alternative anesthetic
+3. **Possibility of intravenous ketogenic diet**: Lin et al. (2015) reported successful cases of intravenous KD (IV-KD) in children. Can also be used in the acute stage when oral intake is not possible
+4. **Direct administration of BHB**: The Cell Discovery (2024) study suggests that BHB alone, rather than the entire KD, may function as an antiepileptic drug. Intravenous BHB administration may be an option in the future
+5. **Benefits of early implementation**: Although currently a “last resort”, earlier implementation has the potential to improve outcomes.
+
+---
+
+## 4. General discussion — common principles that run through the three topics
+
+### 4.1 “The intestinal tract is a controllable entrance to the brain.”
+
+Fundamental insights common to the three topics:
+
+````
+Intestinal tract → Vagus nerve afferent route / Metabolites / Immune signals → Regulation of brain function
+````
+
+- **Topic 1**: By delivering drugs to the intestinal tract, "information" can be sent to the brain without physically passing through the BBB
+- **Topic 2**: Post-resuscitation intestinal protection and early enteral nutrition contribute to brain protection
+- **Topic 3**: A “dietary change” called the ketogenic diet dramatically suppresses intractable seizures in ICU patients
+
+### 4.2 Potential for clinical integration
+By integrating the three user ideas, the following **hypothetical protocol** emerges:
+
+> **In post-cardiac arrest ROSC patients, early initiation of enteral nutrition containing neuroprotective metabolites (butyrate, etc.) through the enteral tube (1) and (2) transition to a ketogenic diet regimen will achieve multifaceted brain protection via the gut-brain axis**
+
+This is based on the following grounds:
+- Early EN: improved survival (MIMIC-IV study)
+- Butyrate: suppresses neuroinflammation via the gut-brain axis (Zhang et al., 2025)
+- Ketogenic diet: BHB increases GABA/glutamate ratio, suppresses NLRP3, protects mitochondria
+- Since the risk of seizures is high after cardiac arrest, the antiepileptic effects of KD can also be used at the same time.
+
+### 4.3 Comparison of maturity level of each topic
+
+| Topics | Level of Evidence | Clinical Implementation | Future Requirements |
+|----------|-------------------|----------|----------------|
+| Drug delivery through gut-brain relationships | Preclinical ★★★ | Proof of concept stage | Human clinical trials |
+| Enteral tube administration during resuscitation | Observational study ★★★ | Early EN ongoing | RCT of neuroprotective substance addition |
+| Ketogenic diet x status epilepticus | Prospective study ★★★★ | **Already in clinical practice** | Large-scale RCT |
+
+---
+
+## References
+1. Bonaz B, Bazin T, Pellissier S. "The Vagus Nerve at the Interface of the Microbiota-Gut-Brain Axis." *Front. Neurosci.* 12:49 (2018).
+2. Kaelberer MM, Rupprecht LE, Liu WW, Weng P, Bohórquez DV. "Neuropod Cells: The Emerging Biology of Gut-Brain Sensory Transduction." *Annu. Rev. Neurosci.* 43:337-353 (2020).
+3. Liddle RA. "Neuropods." *Cell Mol Gastroenterol Hepatol.* 7(4):739-747 (2019).
+4. Chan KL. "Gut-to-brain vagal afferents transmit reward signals." *Nat. Rev. Gastroenterol. Hepatol.* (2025).
+5. Hwang YK, Oh JS. "Interaction of the Vagus Nerve and Serotonin in the Gut-Brain Axis." *Int. J. Mol. Sci.* 26(3):1160 (2025).
+6. Lorsch ZS, Liddle RA. "Mechanisms and clinical implications of gut-brain interactions." *J. Clin. Invest.* (2026).
+7. Waldman SA et al. "Enteroendocrine cell regulation of the gut-brain axis." *Front. Neurosci.* 17:1272955 (2023).
+8. Chang Y et al. "Gut-derived macrophages link intestinal damage to brain injury after cardiac arrest through TREM1 signaling." *Cell. Mol. Immunol.* 22:437-455 (2025).
+9. Zhang H et al. "Sodium Butyrate Reinforces Intestinal Homeostasis and Ameliorates Post-Resuscitation Neuroinflammation in Rat Model of Cardiac Arrest." Research Square preprint (2025).
+10. Early enteral nutrition and cardiac arrest outcomes. MIMIC-IV study, *PubMed* 38962373 (2024).
+11. Ren Y et al. "Ketogenic diet treatment for super-refractory status epilepticus in the intensive care unit." *Front. Neurol.* 15:1517850 (2025).
+12. Mahmoud SH, Ho-Huang E, Buhler J. "Systematic review of ketogenic diet use in adult patients with status epilepticus." *Epilepsia Open* 5(1):10-21 (2020).
+13. Francis BA et al. "The Feasibility, Safety and Effectiveness of a Ketogenic Diet for Refractory Status Epilepticus in Adults in the Intensive Care Unit." *Neurocrit. Care* 30:652-657 (2019).
+14. Kim et al. "Expanding Indications for a Ketogenic Diet as an Adjuvant Therapy in Adult Refractory Status Epilepticus." *Neurotherapeutics* 19:1526-1534 (2022).
+15. Huang et al. "Ketogenic diet-produced β-hydroxybutyric acid accumulates brain GABA and increases GABA/glutamate ratio to inhibit epilepsy." *Cell Discovery* (2024).
+16. Boison D. "New insights into the mechanisms of the ketogenic diet." *Curr. Opin. Neurol.* 30(2):187-192 (2017).
+17. "Ketogenic diet for status epilepticus in adult ICU patients: a standard operating procedure." *Neurol. Res. Pract.* 7:87 (2025).
+18. Choudhary RC et al. "Pharmacological Approach for Neuroprotection After Cardiac Arrest." *Front. Med.* 8:636651 (2021).
+19. Sun X et al. "Significance of the gut tract in therapeutic mechanisms of polydopamine for acute cerebral infarction." *Front. Cell. Infect. Microbiol.* (2025).
+20. Monai H et al. "Immediate glucose signaling transmitted via the vagus nerve in gut-brain neural communication." *bioRxiv* (2024).
+21. Raya D et al. "Recent drug delivery systems targeting the gut-brain-microbiome axis." *Int. J. Pharm.* 680:125776 (2025).
+22. Williams RSB, Boison D, Masino SA, Rho JM. "Mechanisms of Ketogenic Diet Action." In: *Jasper's Basic Mechanisms of the Epilepsies*, 5th ed. (2024).
+
