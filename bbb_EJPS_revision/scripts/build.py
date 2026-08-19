@@ -26,6 +26,8 @@ OUTPUT_DIR = ROOT / 'output'
 
 # Prefer the standalone pandoc used in this session; fall back to PATH.
 PANDOC_CANDIDATES = [
+    ROOT / 'tools' / 'pandoc-3.1.11' / 'bin' / 'pandoc',
+    ROOT / 'tools' / 'pandoc' / 'bin' / 'pandoc',
     Path('/tmp/pandoc-3.1.11/bin/pandoc'),
     Path('/usr/bin/pandoc'),
     Path('/usr/local/bin/pandoc'),
@@ -40,7 +42,7 @@ for cand in PANDOC_CANDIDATES:
         break
 
 if not PANDOC:
-    raise FileNotFoundError("pandoc not found. Install pandoc or place it on PATH.")
+    raise FileNotFoundError("pandoc not found. Install pandoc 3.1+ or place it on PATH.")
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
