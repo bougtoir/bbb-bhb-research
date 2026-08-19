@@ -289,19 +289,25 @@ def _markdown_table(rows, widths=None):
 
 def make_tables_docx(md_text):
     """Create a separate editable docx containing the resolved tables."""
-    # Extract table blocks from the filled markdown
+    # Extract table blocks from the filled markdown and label them sequentially.
     lines = md_text.splitlines()
-    out_lines = ['# Table 1. Descriptor values and references\n']
+    out_lines = []
+    table_index = 0
     in_table = False
-    for i, line in enumerate(lines):
-        if line.startswith('|') or (i + 1 < len(lines) and lines[i + 1].startswith('|-')):
+    for line in lines:
+        if line.startswith('|'):
+            if not in_table:
+                table_index += 1
+                title = (
+                    'Descriptor values and references'
+                    if table_index == 1
+                    else 'Conventional vs unconventional descriptors'
+                )
+                out_lines.append(f'# Table {table_index}. {title}\n')
+                in_table = True
             out_lines.append(line)
-            in_table = True
         else:
-            if in_table:
-                out_lines.append('\n# Table 2. Conventional vs unconventional descriptors\n')
-                in_table = False
-            # otherwise skip body text
+            in_table = False
     md_path = OUTPUT_DIR / 'tables.md'
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(out_lines))
