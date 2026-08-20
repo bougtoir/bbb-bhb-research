@@ -40,7 +40,7 @@ We thank Reviewer #2 for the constructive comments. Below we address each point 
 
 > "The authors should present in a table the values of the descriptors used for each drug and the relevant reference."
 
-**Response.** Table 1 now reports, for each of the 24 drugs, the BBB status, molecular weight, $A_D$, CCS trend, desolvation cost, P-gp substrate status, dipole, LUMO, 3D-PSA, chameleonicity, substructural synergy, lateral bilayer pressure effect, net-flux scenario, and the relevant literature references (page 3). The complete numerical matrix is also provided as a supplementary CSV file.
+**Response.** Table 1 now reports, for each of the {{N_DRUGS}} drugs, the BBB status, molecular weight, $A_D$, CCS trend, desolvation cost, P-gp substrate status, dipole, LUMO, 3D-PSA, chameleonicity, substructural synergy, lateral bilayer pressure effect, net-flux scenario, and the relevant literature references (page 3). The complete numerical matrix is also provided as a supplementary CSV file.
 
 ---
 
@@ -48,7 +48,7 @@ We thank Reviewer #2 for the constructive comments. Below we address each point 
 
 > "The reference for Lateral bilayer pressure is not relevant. The reference for Substructural synergy is wrong."
 
-**Response.** We corrected both references. The lateral bilayer pressure model is now cited to Fischer, Gottschlich and Seelig, *J Membr Biol* 1998, 165:201–211, which reports the BBB-mimicking bilayer pressure $\pi_{bi} \approx 34\ \mathrm{mN/m}$ and the exponential relationship between $A_D$ and partitioning (Methods and Table 1). The substructural synergy descriptor is now cited to Lee, Jun, Kim et al., *Comput Biol Med* 2025, DOI 10.1016/j.compbiomed.2025.111183 (Methods and Table 1).
+**Response.** We corrected both references. The lateral bilayer pressure model is now cited to Fischer, Gottschlich and Seelig, *J Membr Biol* 1998, 165:201–211, which reports the BBB-mimicking bilayer pressure $\pi_{bi} \approx {{PI_BI_MN_M}}\ \mathrm{mN/m}$ and the exponential relationship between $A_D$ and partitioning (Methods and Table 1). The substructural synergy descriptor is now cited to Lee, Jun, Kim et al., *Comput Biol Med* 2025, DOI 10.1016/j.compbiomed.2025.111183 (Methods and Table 1).
 
 ---
 

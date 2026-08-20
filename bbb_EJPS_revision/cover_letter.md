@@ -14,7 +14,7 @@ We are pleased to submit a revised version of our manuscript, "Unconventional Mo
 We have carefully addressed the comments of Reviewer #2. The major revisions are:
 
 1. We rewrote the Introduction to make clear that Lipinski's rule of five and the related CNS guidelines are guidelines, not guarantees, and that Lipinski's rule was originally developed for oral drug absorption.
-2. We added explicit limitations regarding the small 24-drug dataset and the fact that caffeine, ethanol, and nicotine can cross the BBB by paracellular or small-molecule diffusion because their molecular weights are below 200 Da.
+2. We added explicit limitations regarding the small {{N_DRUGS}}-drug dataset and the fact that caffeine, ethanol, and nicotine can cross the BBB by paracellular or small-molecule diffusion because their molecular weights are below {{MW_PARACELLULAR}} Da.
 3. We added a Methods subsection that defines every descriptor and labels it as conventional or unconventional, and we now include molecular weight as a conventional boundary condition.
 4. We added Table 1, which reports the descriptor values used for each drug together with the relevant literature references, and Table 2, which classifies the descriptors as conventional or unconventional.
 5. We corrected the reference for lateral bilayer pressure to Fischer, Gottschlich and Seelig (*J Membr Biol*, 1998) and the reference for substructural synergy to Lee, Jun, Kim et al. (*Comput Biol Med*, 2025).

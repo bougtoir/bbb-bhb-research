@@ -1,0 +1,21 @@
+key,value,unit,description,source_ref
+BOLTZMANN_KB,1.380649e-23,J/K,Boltzmann constant (CODATA 2018),CODATA2018
+TEMPERATURE_K,310,K,Physiological temperature used for kT,body_temperature
+BILAYER_PRESSURE_MNM,34,mN/m,Lateral bilayer pressure for BBB-mimicking membranes,FISCHER1998
+AD_REFERENCE_A2,20,Angstrom2,Reference membrane cross-sectional area (ethanol),descriptor_table
+AD_CUTOFF_A2,70,Angstrom2,Approximate A_D cutoff above which membrane partitioning drops sharply,FISCHER1998;SEELIG2007
+AD_LOW_A2,50,Angstrom2,Lower end of A_D range for easy BBB crossing,FISCHER1998
+AD_HIGH_A2,80,Angstrom2,Upper end of A_D range that essentially excludes BBB crossing,FISCHER1998
+MW_PARACELLULAR_DA,200,Da,Practical upper MW for the low-MW example set (caffeine; ethanol; nicotine) used to flag paracellular/small-molecule diffusion,ABRAHAM2004;PARDIDGE2012
+MW_CNS_MAX_DA,450,Da,Upper molecular-weight boundary of typical CNS-drug guidelines,RANKOVIC2015
+CNS_LOGP_MIN,1,dimensionless,Lower cLogP boundary of typical CNS-drug guidelines,RANKOVIC2015
+CNS_LOGP_MAX,3,dimensionless,Upper cLogP boundary of typical CNS-drug guidelines,RANKOVIC2015
+TPSA_CNS_MIN_A2,60,Angstrom2,Lower end of typical CNS TPSA guideline range,RANKOVIC2015
+TPSA_CNS_MAX_A2,70,Angstrom2,Upper end of typical CNS TPSA guideline range,RANKOVIC2015
+FIGURE_DPI,300,dimensionless,Resolution of generated PNG figures,
+FIGURE1_WIDTH_IN,9,in,Width of Figure 1 canvas,
+FIGURE1_HEIGHT_IN,4.5,in,Height of Figure 1 canvas,
+FIGURE2_WIDTH_IN,10,in,Width of Figure 2 canvas,
+FIGURE2_HEIGHT_IN,7,in,Height of Figure 2 canvas,
+PPTX_WIDTH_IN,13.333,in,PowerPoint slide width,
+PPTX_HEIGHT_IN,7.5,in,PowerPoint slide height,

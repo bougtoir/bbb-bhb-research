@@ -59,6 +59,128 @@ def read_text(path):
         return f.read()
 
 
+def oxford_join(items):
+    """Comma-separated list with an Oxford comma."""
+    if not items:
+        return ''
+    if len(items) == 1:
+        return items[0]
+    if len(items) == 2:
+        return f'{items[0]} and {items[1]}'
+    return ', '.join(items[:-1]) + f', and {items[-1]}'
+
+
+def fmt_scientific(raw):
+    """Format a raw number (possibly in 1.23e-4 notation) for Markdown math."""
+    raw = str(raw).strip().lower().replace(' ', '').replace('+', '')
+    if 'e' not in raw:
+        try:
+            f = float(raw)
+        except ValueError:
+            return raw
+        if f.is_integer():
+            return str(int(f))
+        return raw.rstrip('0').rstrip('.') if '.' in raw else raw
+    mant, exp = raw.split('e')
+    exp = int(exp)
+    if mant in ('', '.'):
+        mant = '0'
+    return f'{mant} \\times 10^{{{exp}}}'
+
+
+def fmt_value(value, sig_figs=4, decimals=3):
+    """Format a numeric value for Markdown text; integers stay plain, very small/large values use scientific notation."""
+    f = float(value)
+    if f.is_integer():
+        return str(int(f))
+    if abs(f) < 1e-3 or abs(f) >= 1e4:
+        return fmt_scientific(f'{f:.{sig_figs-1}e}')
+    return f'{f:.{decimals}g}'
+
+
+def get_param(params, key, as_float=False):
+    """Read a parameter from the parameters CSV."""
+    if key not in params:
+        raise KeyError(f'Missing parameter: {key}')
+    raw = str(params[key]).strip()
+    if as_float:
+        return float(raw)
+    return raw
+
+
+def load_params(path):
+    """Return a dict of key -> raw value from parameters.csv."""
+    rows = load_csv(path)
+    return {r['key']: r['value'] for r in rows}
+
+
+# ---------------------------------------------------------------------------
+# Computed values derived from public data + parameters
+# ---------------------------------------------------------------------------
+def compute_values(df, params):
+    """Compute all manuscript counts and lists from the CSV data and parameters."""
+    n_drugs = len(df)
+    n_bbb_pos = sum(1 for d in df if d['bbb_status'].startswith('+'))
+    n_bbb_neg = n_drugs - n_bbb_pos
+
+    ad_cutoff = get_param(params, 'AD_CUTOFF_A2', as_float=True)
+    bbb_minus_size = sorted([d for d in df if d['bbb_status'].startswith('-') and float(d['a_d']) >= ad_cutoff], key=lambda d: d['drug'])
+    bbb_minus_nonsize = sorted([d for d in df if d['bbb_status'].startswith('-') and float(d['a_d']) < ad_cutoff], key=lambda d: d['drug'])
+    size_names = oxford_join([d['drug'] for d in bbb_minus_size])
+    nonsize_names = [d['drug'] for d in bbb_minus_nonsize]
+    nonsize_clause = make_nonsize_clause(nonsize_names, ad_cutoff)
+
+    kb = get_param(params, 'BOLTZMANN_KB', as_float=True)
+    T = get_param(params, 'TEMPERATURE_K', as_float=True)
+    kT = kb * T
+    mw_paracell = get_param(params, 'MW_PARACELLULAR_DA', as_float=True)
+    pi_mnm = get_param(params, 'BILAYER_PRESSURE_MNM', as_float=True)
+    pi_nm = pi_mnm / 1000.0
+    A_ref = get_param(params, 'AD_REFERENCE_A2', as_float=True)
+
+    values = {
+        'N_DRUGS': str(n_drugs),
+        'N_BBB_POS': str(n_bbb_pos),
+        'N_BBB_NEG': str(n_bbb_neg),
+        'N_BBB_MINUS_SIZE': str(len(bbb_minus_size)),
+        'N_BBB_MINUS_NONSIZE': str(len(bbb_minus_nonsize)),
+        'BBB_MINUS_SIZE_LIST': size_names,
+        'BBB_MINUS_NONSIZE_LIST': oxford_join(nonsize_names),
+        'BBB_MINUS_NONSIZE_CLAUSE': nonsize_clause,
+        'AD_CUTOFF': fmt_value(ad_cutoff),
+        'AD_LOW': fmt_value(get_param(params, 'AD_LOW_A2', as_float=True)),
+        'AD_HIGH': fmt_value(get_param(params, 'AD_HIGH_A2', as_float=True)),
+        'MW_PARACELLULAR': fmt_value(mw_paracell),
+        'MW_CNS_MAX': fmt_value(get_param(params, 'MW_CNS_MAX_DA', as_float=True)),
+        'CNS_LOGP_MIN': fmt_value(get_param(params, 'CNS_LOGP_MIN', as_float=True)),
+        'CNS_LOGP_MAX': fmt_value(get_param(params, 'CNS_LOGP_MAX', as_float=True)),
+        'TPSA_CNS_MIN': fmt_value(get_param(params, 'TPSA_CNS_MIN_A2', as_float=True)),
+        'TPSA_CNS_MAX': fmt_value(get_param(params, 'TPSA_CNS_MAX_A2', as_float=True)),
+        'PI_BI_MN_M': fmt_value(pi_mnm),
+        'PI_BI_N_M': fmt_value(pi_nm, sig_figs=3, decimals=3),
+        'KB': fmt_scientific(get_param(params, 'BOLTZMANN_KB')),
+        'TEMP_K': fmt_value(T),
+        'KT_J': fmt_value(kT, sig_figs=4, decimals=3),
+        'A_REF': fmt_value(A_ref),
+    }
+    return values
+
+
+def make_nonsize_clause(names, cutoff):
+    if not names:
+        return ''
+    subj = oxford_join(names)
+    if len(names) == 1:
+        verb = 'is'
+        pronoun = 'its'
+    else:
+        verb = 'are'
+        pronoun = 'their'
+    cutoff_str = fmt_value(cutoff)
+    return (f'{subj} {verb} BBB-negative despite {pronoun} $A_D$ values below about '
+            f'{cutoff_str} Å², reflecting high polarity and/or P-gp-mediated efflux.')
+
+
 # ---------------------------------------------------------------------------
 # Citation manager
 # ---------------------------------------------------------------------------
@@ -111,12 +233,31 @@ def replace_citations(text, citer):
 # ---------------------------------------------------------------------------
 # Figure generation
 # ---------------------------------------------------------------------------
-def generate_figures(df):
+def generate_figures(df, params):
     """Generate PNG figures and a PPTX with one slide per figure."""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    kb = get_param(params, 'BOLTZMANN_KB', as_float=True)
+    T = get_param(params, 'TEMPERATURE_K', as_float=True)
+    pi_mnm = get_param(params, 'BILAYER_PRESSURE_MNM', as_float=True)
+    pi = pi_mnm / 1000.0
+    A_ref = get_param(params, 'AD_REFERENCE_A2', as_float=True)
+    ad_cutoff = get_param(params, 'AD_CUTOFF_A2', as_float=True)
+    kT = kb * T
+    factor = pi / kT * 1e-20
+
+    figsize1 = (
+        get_param(params, 'FIGURE1_WIDTH_IN', as_float=True),
+        get_param(params, 'FIGURE1_HEIGHT_IN', as_float=True),
+    )
+    figsize2 = (
+        get_param(params, 'FIGURE2_WIDTH_IN', as_float=True),
+        get_param(params, 'FIGURE2_HEIGHT_IN', as_float=True),
+    )
+    dpi = int(get_param(params, 'FIGURE_DPI', as_float=True))
+
     # ---- Figure 1: conceptual model ----
-    fig, ax = plt.subplots(figsize=(9, 4.5))
+    fig, ax = plt.subplots(figsize=figsize1)
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 5)
     ax.axis('off')
@@ -149,24 +290,20 @@ def generate_figures(df):
     ax.set_title('Figure 1. Unified three-gate model of BBB permeability', fontsize=11, pad=10)
     fig.tight_layout()
     fig1_path = OUTPUT_DIR / 'figure1_unified_model.png'
-    fig.savefig(fig1_path, dpi=300, bbox_inches='tight')
+    fig.savefig(fig1_path, dpi=dpi, bbox_inches='tight')
     plt.close(fig)
 
     # ---- Figure 2: A_D and relative partition term ----
-    kT = 1.380649e-23 * 310.0
-    pi_bi = 0.034  # N/m
-    A_ref = 20.0
-    factor = pi_bi / kT * 1e-20
-
     labels = [d['drug'] for d in df]
     a_d = [float(d['a_d']) for d in df]
     rel = [math.exp(-factor * (ad - A_ref)) for ad in a_d]
     colors = ['#1f77b4' if d['bbb_status'].startswith('+') else '#ff7f0e' for d in df]
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize2, sharex=True)
     x = list(range(len(labels)))
     ax1.bar(x, a_d, color=colors, edgecolor='black', linewidth=0.5)
-    ax1.axhline(70, color='red', linestyle='--', linewidth=1.2, label='$A_D \\approx 70$ Å² cutoff')
+    cutoff_label = f'$A_D \\approx {int(ad_cutoff)}$ Å² cutoff'
+    ax1.axhline(ad_cutoff, color='red', linestyle='--', linewidth=1.2, label=cutoff_label)
     ax1.set_ylabel('$A_D$ (Å²)', fontsize=10)
     ax1.set_title('Figure 2. Estimated $A_D$ and relative partition term', fontsize=11)
     ax1.legend(loc='upper right', fontsize=8)
@@ -185,13 +322,13 @@ def generate_figures(df):
 
     fig.tight_layout()
     fig2_path = OUTPUT_DIR / 'figure2_descriptor_values.png'
-    fig.savefig(fig2_path, dpi=300, bbox_inches='tight')
+    fig.savefig(fig2_path, dpi=dpi, bbox_inches='tight')
     plt.close(fig)
 
     # ---- Editable PPTX ----
     prs = Presentation()
-    prs.slide_width = Inches(13.333)
-    prs.slide_height = Inches(7.5)
+    prs.slide_width = Inches(get_param(params, 'PPTX_WIDTH_IN', as_float=True))
+    prs.slide_height = Inches(get_param(params, 'PPTX_HEIGHT_IN', as_float=True))
 
     def add_fig_slide(img_path, title_text, caption_text):
         slide = prs.slides.add_slide(prs.slide_layouts[6])
@@ -218,7 +355,7 @@ def generate_figures(df):
                   'A molecule must pass three gates: desolvation (P_desolv), membrane partition (P_partition), and net transmembrane flux (P_net flux).')
     add_fig_slide(fig2_path,
                   'Figure 2. Estimated A_D and relative partition term',
-                  'Estimated membrane cross-sectional area and the relative partition term from the lateral bilayer pressure model. Dashed line marks the A_D ≈ 70 Å² cutoff.')
+                  f'Estimated membrane cross-sectional area and the relative partition term from the lateral bilayer pressure model. Dashed line marks the A_D ≈ {int(ad_cutoff)} Å² cutoff.')
 
     pptx_path = OUTPUT_DIR / 'figures.pptx'
     prs.save(str(pptx_path))
@@ -255,22 +392,32 @@ def make_table1(df):
     return _markdown_table(rows, [12, 6, 6, 6, 8, 10, 8, 8, 7, 8, 7, 12, 10, 10])
 
 
-def make_table2():
+def make_table2_rows(params, values):
+    """Return the descriptor-classification rows (header + data)."""
+    ad_cutoff = fmt_value(get_param(params, 'AD_CUTOFF_A2', as_float=True))
+    pi_mnm = fmt_value(get_param(params, 'BILAYER_PRESSURE_MNM', as_float=True))
+    low_mw = 'caffeine, ethanol, and nicotine'
     rows = [
         ['Descriptor', 'Class', 'Definition', 'Key reference', 'Discriminatory power'],
-        ['Molecular weight (MW)', 'Conventional', 'Mass of the molecule; low MW aids paracellular/small-molecule diffusion', '{{CITE:LIPINSKI2001}}', 'Boundary condition; explains caffeine/ethanol/nicotine'],
+        ['Molecular weight (MW)', 'Conventional', 'Mass of the molecule; low MW aids paracellular/small-molecule diffusion', '{{CITE:LIPINSKI2001}}', f'Boundary condition; explains {low_mw}'],
         ['logP', 'Conventional', 'Lipophilicity; high logP favors partition but does not guarantee BBB entry', '{{CITE:LIPINSKI2001}}', 'Limited alone; loperamide has high logP but is BBB-'],
         ['HBD / HBA / TPSA', 'Conventional', 'Hydrogen-bond donor/acceptor counts and topological polar surface area', '{{CITE:LIPINSKI2001,ABRAHAM2004}}', 'Useful boundaries; desolvation refines them'],
         ['Dipole moment / polarizability', 'Conventional', '3D electronic descriptors of electrostatic and polarizability effects', '{{CITE:MONTGOMERY2024,WANAT2023}}', 'Weak independent discrimination'],
         ['LUMO energy', 'Conventional', 'Frontier orbital energy; used in QSAR models', '{{CITE:WANAT2023}}', 'Weak independent discrimination'],
         ['3D-PSA', 'Conventional', 'Conformationally resolved polar surface area', '{{CITE:SHITYAKOV2013}}', 'Moderate; improves over TPSA when H-bonds shield polarity'],
-        ['Membrane cross-sectional area ($A_D$)', 'Unconventional', 'Minimum area presented when inserting into a lipid bilayer', '{{CITE:FISCHER1998,SEELIG1994PNAS,SEELIG2007}}', 'Strong; BBB+ compounds all below ~70 Å²'],
+        ['Membrane cross-sectional area ($A_D$)', 'Unconventional', 'Minimum area presented when inserting into a lipid bilayer', '{{CITE:FISCHER1998,SEELIG1994PNAS,SEELIG2007}}', f'Strong; BBB+ compounds all below ~{ad_cutoff} Å²'],
         ['Collision cross-section (CCS)', 'Unconventional', 'Rotationally averaged cross-section from ion-mobility mass spectrometry', '{{CITE:GUNTNER2019,GUNTNER2021}}', 'Moderate to strong; experimental complement to $A_D$'],
         ['P-gp net flux', 'Unconventional', '$J_{\\mathrm{net}} = J_{\\mathrm{influx}} - J_{\\mathrm{efflux}}$', '{{CITE:SCHINKEL1996,LINNET2008,ZHANG2012,LOSCHER2005}}', 'Strong; explains loperamide, loratadine, cetirizine'],
         ['Chameleonicity / ΔPSA', 'Unconventional', 'Change in exposed polar surface between water and lipid', '{{CITE:POONGAVANAM2024,YU2026}}', 'Limited for small molecules; stronger for macrocycles'],
-        ['Lateral bilayer pressure', 'Unconventional', 'Mechanical bilayer pressure opposing insertion; $\\pi_{bi} \\approx 34$ mN/m', '{{CITE:FISCHER1998}}', 'Moderate; provides physical basis for $A_D$ cutoff'],
+        ['Lateral bilayer pressure', 'Unconventional', f'Mechanical bilayer pressure opposing insertion; $\\pi_{{bi}} \\approx {pi_mnm}$ mN/m', '{{CITE:FISCHER1998}}', f'Moderate; provides physical basis for $A_D$ cutoff'],
         ['Substructural synergy', 'Unconventional', 'Co-occurrence patterns of fragments associated with BBB permeation', '{{CITE:LEE2025}}', 'Moderate; pattern descriptor, not mechanism'],
     ]
+    return rows
+
+
+def make_table2(params, values):
+    """Return a Markdown table classifying descriptors."""
+    rows = make_table2_rows(params, values)
     return _markdown_table(rows, [16, 12, 36, 16, 28])
 
 
@@ -289,7 +436,6 @@ def _markdown_table(rows, widths=None):
 
 def make_tables_docx(md_text):
     """Create a separate editable docx containing the resolved tables."""
-    # Extract table blocks from the filled markdown and label them sequentially.
     lines = md_text.splitlines()
     out_lines = []
     table_index = 0
@@ -320,7 +466,6 @@ def make_tables_docx(md_text):
 # Pandoc runner
 # ---------------------------------------------------------------------------
 def run_pandoc(md_path, docx_path):
-    # Pandoc resolves relative image paths against the working directory, so run from OUTPUT_DIR.
     cmd = [str(PANDOC), Path(md_path).name, '-o', Path(docx_path).name, '--mathml']
     subprocess.run(cmd, cwd=str(OUTPUT_DIR), check=True)
 
@@ -335,7 +480,6 @@ def build_doc(template_name, out_name, replacements, citer, write_md=True):
         with open(md_out, 'w', encoding='utf-8') as f:
             f.write(md)
     docx_out = OUTPUT_DIR / out_name
-    # write temporary md for pandoc in case md_out not requested
     tmp_md = OUTPUT_DIR / (Path(template_name).stem + '_tmp.md')
     with open(tmp_md, 'w', encoding='utf-8') as f:
         f.write(md)
@@ -346,11 +490,11 @@ def build_doc(template_name, out_name, replacements, citer, write_md=True):
 # ---------------------------------------------------------------------------
 # Reviewer evaluation report
 # ---------------------------------------------------------------------------
-def make_reviewer_evaluation():
-    content = """# Reviewer-perspective evaluation of the revised manuscript
+def make_reviewer_evaluation(values):
+    content = f"""# Reviewer-perspective evaluation of the revised manuscript
 
 ## Overall verdict
-The revised manuscript addresses the six main points raised by Reviewer #2. It is now methodologically transparent, the dataset limitations are clearly stated, the descriptors are defined and classified, Table 1 provides the requested values and references, the references for lateral bilayer pressure and substructural synergy have been corrected, and the therapeutic applications are explicitly labelled as indicative. Remaining concerns are minor and centre on the inherent small size of the literature-derived dataset; the manuscript does not overstate its conclusions.
+The revised manuscript addresses the six main points raised by Reviewer #2. It is now methodologically transparent, the dataset limitations are clearly stated, the descriptors are defined and classified, Table 1 provides the requested values and references, the references for lateral bilayer pressure and substructural synergy have been corrected, and the therapeutic applications are explicitly labelled as indicative. Remaining concerns are minor and centre on the inherent small size (n={values['N_DRUGS']}) of the literature-derived dataset; the manuscript does not overstate its conclusions.
 
 ## 1. Manuscript quality
 - **Newness/focus:** The unified three-gate model provides a coherent conceptual framework that integrates several descriptors. The focus is clearer after the Introduction revision.
@@ -359,7 +503,7 @@ The revised manuscript addresses the six main points raised by Reviewer #2. It i
 - **Result-conclusion alignment:** Conclusions match the results; the word "heuristic" and repeated caveats prevent over-claim.
 
 ## 2. Statistics and design
-- The study is a conceptual synthesis, not a formal statistical modelling study. The small n=24 dataset is acknowledged repeatedly. No p-values or confidence intervals are claimed.
+- The study is a conceptual synthesis, not a formal statistical modelling study. The small n={values['N_DRUGS']} dataset ({values['N_BBB_POS']} BBB-positive, {values['N_BBB_NEG']} BBB-negative) is acknowledged repeatedly. No p-values or confidence intervals are claimed.
 - The relative partition term is computed from a deterministic physical formula using estimated A_D; the manuscript explicitly states this is illustrative.
 
 ## 3. Figures and tables
@@ -369,8 +513,8 @@ The revised manuscript addresses the six main points raised by Reviewer #2. It i
 - Figures are also provided as a separate editable .pptx and as individual PNG files.
 
 ## 4. Reproducibility
-- The public repository contains the source CSV, the reference list, the build script, and the Markdown templates.
-- All manuscript numbers, tables, and figures can be regenerated from the repository.
+- The public repository contains the source CSVs, the reference list, the build script, and the Markdown templates.
+- All manuscript numbers, tables, and figures are regenerated from the CSVs and parameters by `scripts/build.py`.
 - The derivation of the relative partition term is documented with the constants used.
 
 ## 5. Strength of claims
@@ -416,9 +560,12 @@ def run_checks(docx_path, md_path, label=''):
         else:
             report.append(f'WARNING: {fig_tbl} not cited in text')
 
-    # Count reference placeholders resolved: count superscript numbers in md (^[digits]^)
     cite_marks = re.findall(r'\^\d+(?:,\d+)*\^', md_text)
     report.append(f'In-text citation marks: {len(cite_marks)}')
+
+    unresolved = re.findall(r'\{\{[^}]+\}\}', md_text)
+    if unresolved:
+        report.append(f'WARNING: unresolved placeholders: {unresolved}')
 
     report.append('Check complete.')
     return '\n'.join(report)
@@ -430,15 +577,19 @@ def run_checks(docx_path, md_path, label=''):
 def main():
     df = load_csv(DATA_DIR / 'descriptor_table.csv')
     refs = load_csv(DATA_DIR / 'references.csv')
+    params = load_params(DATA_DIR / 'parameters.csv')
 
-    fig1, fig2, pptx = generate_figures(df)
+    values = compute_values(df, params)
+
+    fig1, fig2, pptx = generate_figures(df, params)
 
     table1_md = make_table1(df)
-    table2_md = make_table2()
+    table2_md = make_table2(params, values)
 
     citer = Citer(refs)
     fig1_rel = str(fig1.relative_to(OUTPUT_DIR))
     fig2_rel = str(fig2.relative_to(OUTPUT_DIR))
+
     manuscript_replacements = {
         'TABLE1': table1_md,
         'TABLE2': table2_md,
@@ -446,11 +597,12 @@ def main():
         'FIGURE2': f'![Figure 2. Estimated $A_D$ and relative partition term]({fig2_rel}){{width=90%}}',
         'REFERENCES': '{{REFERENCES}}',
     }
+    manuscript_replacements.update(values)
+
     main_docx, main_md = build_doc('manuscript.md', 'main_manuscript.docx', manuscript_replacements, citer, write_md=True)
 
-    # Now resolve references
+    # Resolve references
     main_md = main_md.replace('{{REFERENCES}}', citer.reference_list())
-    # Overwrite filled md and docx with final references
     filled_md_path = OUTPUT_DIR / 'manuscript_filled.md'
     with open(filled_md_path, 'w', encoding='utf-8') as f:
         f.write(main_md)
@@ -468,13 +620,13 @@ def main():
     tables_docx = make_tables_docx(main_md)
 
     # Response letter
-    resp_docx, _ = build_doc('response_to_reviewers.md', 'response_to_reviewers.docx', {}, Citer(refs), write_md=False)
+    resp_docx, _ = build_doc('response_to_reviewers.md', 'response_to_reviewers.docx', values, Citer(refs), write_md=False)
 
     # Cover letter
-    cover_docx, _ = build_doc('cover_letter.md', 'cover_letter.docx', {}, Citer(refs), write_md=False)
+    cover_docx, _ = build_doc('cover_letter.md', 'cover_letter.docx', values, Citer(refs), write_md=False)
 
     # Reviewer evaluation
-    eval_path = make_reviewer_evaluation()
+    eval_path = make_reviewer_evaluation(values)
 
     # Checks
     check_report = run_checks(main_docx, filled_md_path, label='main manuscript')
@@ -488,7 +640,7 @@ def main():
     zip_path = OUTPUT_DIR / 'submission_package.zip'
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         for f in [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, fig1, fig2,
-                  DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv',
+                  DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv', DATA_DIR / 'parameters.csv',
                   eval_path, check_path, filled_md_path, sub_md_path]:
             zf.write(f, arcname=f.name)
 
