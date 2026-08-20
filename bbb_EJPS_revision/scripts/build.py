@@ -522,6 +522,11 @@ The revised manuscript addresses the six main points raised by Reviewer #2. It i
 - The morphine/CNS-affinity caveat for local anesthetics directly addresses Reviewer #2's safety concern.
 - No causal language beyond what the cited biophysical relationships support.
 
+## 6. Threshold rationale audit
+- A_D thresholds (50/70/80 Å²) are explicitly tied to Fischer/Seelig and cited in the Methods.
+- CNS guideline thresholds (MW 450 Da, cLogP 1–3, TPSA 60–70 Å²) are introduced as descriptive ranges from Rankovic 2015, not as guarantees.
+- The 200-Da low-MW boundary is now described as a practical upper bound for the three smallest BBB-positive examples (caffeine, ethanol, nicotine); the text no longer implies that every compound below 200 Da crosses by paracellular diffusion.
+
 ## Priority actions (post-revision)
 - **Highest priority:** none blocking. The manuscript is ready for resubmission after the authors complete their institutional affiliation.
 - **Medium priority:** If space allows, a separate supplementary file listing the full chemical names and PubChem CIDs would satisfy the Elsevier chemical compounds invitation and improve reproducibility.
