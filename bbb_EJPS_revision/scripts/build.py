@@ -325,6 +325,14 @@ def generate_figures(df, params):
     fig.savefig(fig2_path, dpi=dpi, bbox_inches='tight')
     plt.close(fig)
 
+    # ---- Interactive plot data for Elsevier Interactive Plot Viewer ----
+    fig2_data_path = OUTPUT_DIR / 'figure2_descriptor_values.csv'
+    with open(fig2_data_path, 'w', encoding='utf-8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['drug', 'bbb_status', 'a_d_A2', 'relative_partition_term'])
+        for d, ad_val, rel_val in zip(df, a_d, rel):
+            writer.writerow([d['drug'], d['bbb_status'], ad_val, rel_val])
+
     # ---- Editable PPTX ----
     prs = Presentation()
     prs.slide_width = Inches(get_param(params, 'PPTX_WIDTH_IN', as_float=True))
@@ -360,7 +368,7 @@ def generate_figures(df, params):
     pptx_path = OUTPUT_DIR / 'figures.pptx'
     prs.save(str(pptx_path))
 
-    return fig1_path, fig2_path, pptx_path
+    return fig1_path, fig2_path, pptx_path, fig2_data_path
 
 
 # ---------------------------------------------------------------------------
@@ -586,7 +594,7 @@ def main():
 
     values = compute_values(df, params)
 
-    fig1, fig2, pptx = generate_figures(df, params)
+    fig1, fig2, pptx, fig2_data = generate_figures(df, params)
 
     table1_md = make_table1(df)
     table2_md = make_table2(params, values)
@@ -633,6 +641,12 @@ def main():
     # Reviewer evaluation
     eval_path = make_reviewer_evaluation(values)
 
+    # Chemical compounds list for Elsevier PubChem (up to 10 compounds)
+    chemical_compounds_src = DATA_DIR / 'chemical_compounds.csv'
+    chemical_compounds_path = OUTPUT_DIR / 'chemical_compounds.csv'
+    if chemical_compounds_src.exists():
+        shutil.copy(chemical_compounds_src, chemical_compounds_path)
+
     # Checks
     check_report = run_checks(main_docx, filled_md_path, label='main manuscript')
     check_report += '\n\n' + run_checks(sub_docx, sub_md_path, label='submission manuscript')
@@ -644,9 +658,12 @@ def main():
     # Zip
     zip_path = OUTPUT_DIR / 'submission_package.zip'
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for f in [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, fig1, fig2,
-                  DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv', DATA_DIR / 'parameters.csv',
-                  eval_path, check_path, filled_md_path, sub_md_path]:
+        files_to_zip = [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, fig1, fig2, fig2_data,
+                        DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv', DATA_DIR / 'parameters.csv',
+                        eval_path, check_path, filled_md_path, sub_md_path]
+        if chemical_compounds_path.exists():
+            files_to_zip.append(chemical_compounds_path)
+        for f in files_to_zip:
             zf.write(f, arcname=f.name)
 
     print(f'\nDone. Outputs in {OUTPUT_DIR}')
