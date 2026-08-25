@@ -17,6 +17,8 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 
+import make_graphical_abstract
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -595,6 +597,7 @@ def main():
     values = compute_values(df, params)
 
     fig1, fig2, pptx, fig2_data = generate_figures(df, params)
+    ga_png, ga_pptx = make_graphical_abstract.make_graphical_abstract(OUTPUT_DIR)
 
     table1_md = make_table1(df)
     table2_md = make_table2(params, values)
@@ -658,7 +661,8 @@ def main():
     # Zip
     zip_path = OUTPUT_DIR / 'submission_package.zip'
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        files_to_zip = [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, fig1, fig2, fig2_data,
+        files_to_zip = [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, ga_png, ga_pptx,
+                        fig1, fig2, fig2_data,
                         DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv', DATA_DIR / 'parameters.csv',
                         eval_path, check_path, filled_md_path, sub_md_path]
         if chemical_compounds_path.exists():
@@ -673,6 +677,7 @@ def main():
     print(f'  Cover letter: {cover_docx.name}')
     print(f'  Tables docx: {tables_docx.name}')
     print(f'  Figures pptx: {pptx.name}')
+    print(f'  Graphical abstract: {ga_png.name}, {ga_pptx.name}')
     print(f'  Submission zip: {zip_path.name}')
 
 
