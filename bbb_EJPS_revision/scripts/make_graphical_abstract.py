@@ -83,9 +83,7 @@ def _make_png(output_dir):
     ax.annotate('', xy=(x_g3, arrow_y), xytext=(x_g2 + w_gate, arrow_y),
                 arrowprops=dict(arrowstyle='->', color='#2B2D42', lw=2))
 
-    for x in [x_g2 - 1.5, x_g3 - 1.5]:
-        ax.text(x, arrow_y, '×', ha='center', va='center', fontsize=22,
-                color='#2B2D42', fontweight='bold')
+    # Multiplication symbols are implicit in the sequential gate model; no extra markers are drawn on the arrows.
 
     x_unified, w_unified = 67, 13
     ax.annotate('', xy=(x_unified, arrow_y), xytext=(x_g3 + w_gate, arrow_y),
