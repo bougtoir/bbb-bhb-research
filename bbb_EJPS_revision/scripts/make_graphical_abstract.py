@@ -152,12 +152,11 @@ def _make_pptx(output_dir, png_path):
     p2.font.size = Pt(12)
     p2.alignment = PP_ALIGN.CENTER
 
-    # Image centered in remaining area (height 6.0 in)
-    img_h = Inches(6.0)
-    img_w = img_h * (13.333 / 7.5)
-    left = (prs.slide_width - img_w) / 2
-    top = Inches(0.9)
-    slide.shapes.add_picture(str(png_path), left, top, width=img_w, height=img_h)
+    # Image centered in remaining area; preserve aspect ratio by setting height only
+    img_h = Inches(5.3)
+    top = Inches(1.0)
+    pic = slide.shapes.add_picture(str(png_path), left=0, top=top, height=img_h)
+    pic.left = int((prs.slide_width - pic.width) / 2)
 
     pptx_path = output_dir / 'graphical_abstract.pptx'
     prs.save(str(pptx_path))

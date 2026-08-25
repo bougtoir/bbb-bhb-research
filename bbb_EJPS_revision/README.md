@@ -8,8 +8,10 @@ Source files for the revised manuscript *Unconventional Molecular Descriptors fo
 - `cover_letter.md` – cover letter to the Section Editor
 - `response_to_reviewers.md` – point-by-point response to Reviewer #2
 - `data/descriptor_table.csv` – 24-drug descriptor matrix used for Table 1
+- `data/parameters.csv` – physical constants and thresholds used for calculations
 - `data/references.csv` – 28-entry reference database used to resolve citations
 - `scripts/build.py` – reproducible build pipeline
+- `scripts/manuscript_figures.py` – generator for the 6 figures and editable `figures.pptx`
 
 ## Build outputs
 
@@ -21,7 +23,9 @@ All generated files are written to `output/`:
 - `cover_letter.docx`
 - `tables.docx` – editable tables on their own
 - `figures.pptx` – editable PowerPoint, one figure per slide
-- `figure1_unified_model.png`, `figure2_descriptor_values.png`
+- `figure1_discriminatory_power.png`, `figure2_drug_factor_matrix.png`, `figure3_ad_scatter.png`, `figure4_unified_model.png`, `figure5_clinical_paradoxes.png`, `figure6_applications.png`
+- `graphical_abstract.png`, `graphical_abstract.pptx`
+- `figure2_descriptor_values.csv` – source data for interactive plot submission
 - `submission_package.zip` – complete submission file set
 - `reviewer_evaluation.md` – reviewer-perspective critical review
 - `build_check.txt` – automated checks report

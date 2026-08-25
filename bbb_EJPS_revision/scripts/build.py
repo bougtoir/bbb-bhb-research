@@ -18,6 +18,7 @@ from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 
 import make_graphical_abstract
+import manuscript_figures
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -239,95 +240,21 @@ def generate_figures(df, params):
     """Generate PNG figures and a PPTX with one slide per figure."""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    values = compute_values(df, params)
+    table2_rows = make_table2_rows(params, values)
+    figs = manuscript_figures.generate_figures(df, params, table2_rows, OUTPUT_DIR)
+
+    # ---- Interactive plot data for Elsevier Interactive Plot Viewer ----
     kb = get_param(params, 'BOLTZMANN_KB', as_float=True)
     T = get_param(params, 'TEMPERATURE_K', as_float=True)
     pi_mnm = get_param(params, 'BILAYER_PRESSURE_MNM', as_float=True)
     pi = pi_mnm / 1000.0
     A_ref = get_param(params, 'AD_REFERENCE_A2', as_float=True)
-    ad_cutoff = get_param(params, 'AD_CUTOFF_A2', as_float=True)
     kT = kb * T
     factor = pi / kT * 1e-20
 
-    figsize1 = (
-        get_param(params, 'FIGURE1_WIDTH_IN', as_float=True),
-        get_param(params, 'FIGURE1_HEIGHT_IN', as_float=True),
-    )
-    figsize2 = (
-        get_param(params, 'FIGURE2_WIDTH_IN', as_float=True),
-        get_param(params, 'FIGURE2_HEIGHT_IN', as_float=True),
-    )
-    dpi = int(get_param(params, 'FIGURE_DPI', as_float=True))
-
-    # ---- Figure 1: conceptual model ----
-    fig, ax = plt.subplots(figsize=figsize1)
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 5)
-    ax.axis('off')
-
-    def box(x, y, w, h, text, color):
-        rect = FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05",
-                              facecolor=color, edgecolor='black', linewidth=1.5)
-        ax.add_patch(rect)
-        ax.text(x + w/2, y + h/2, text, ha='center', va='center', fontsize=9, wrap=True)
-
-    box(0.5, 1.5, 2.0, 1.5, 'Water\n$P_{\\mathrm{desolv}}$', '#D0E0FF')
-    box(3.0, 1.5, 2.5, 1.5, 'Lipid bilayer\n$P_{\\mathrm{partition}}$', '#D0FFD0')
-    box(6.0, 1.5, 2.5, 1.5, 'Endothelium\n$P_{\\mathrm{net\\ flux}}$', '#FFD0D0')
-
-    ax.annotate('', xy=(3.0, 2.25), xytext=(2.5, 2.25),
-                arrowprops=dict(arrowstyle='->', lw=2, color='black'))
-    ax.annotate('', xy=(6.0, 2.25), xytext=(5.5, 2.25),
-                arrowprops=dict(arrowstyle='->', lw=2, color='black'))
-    ax.annotate('', xy=(9.0, 2.25), xytext=(8.5, 2.25),
-                arrowprops=dict(arrowstyle='->', lw=2, color='black'))
-
-    ax.text(1.5, 3.4, 'HBD / HBA / charge', ha='center', fontsize=8, style='italic')
-    ax.text(4.25, 3.4, '$A_D$ / $\\pi_{bi}$ / logP', ha='center', fontsize=8, style='italic')
-    ax.text(7.25, 3.4, 'P-gp / $J_{\\mathrm{influx}}$ vs $J_{\\mathrm{efflux}}$', ha='center', fontsize=8, style='italic')
-
-    ax.text(1.5, 0.9, 'desolvation cost', ha='center', fontsize=8)
-    ax.text(4.25, 0.9, 'lateral bilayer pressure', ha='center', fontsize=8)
-    ax.text(7.25, 0.9, 'efflux transport', ha='center', fontsize=8)
-
-    ax.set_title('Figure 1. Unified three-gate model of BBB permeability', fontsize=11, pad=10)
-    fig.tight_layout()
-    fig1_path = OUTPUT_DIR / 'figure1_unified_model.png'
-    fig.savefig(fig1_path, dpi=dpi, bbox_inches='tight')
-    plt.close(fig)
-
-    # ---- Figure 2: A_D and relative partition term ----
-    labels = [d['drug'] for d in df]
     a_d = [float(d['a_d']) for d in df]
     rel = [math.exp(-factor * (ad - A_ref)) for ad in a_d]
-    colors = ['#1f77b4' if d['bbb_status'].startswith('+') else '#ff7f0e' for d in df]
-
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize2, sharex=True)
-    x = list(range(len(labels)))
-    ax1.bar(x, a_d, color=colors, edgecolor='black', linewidth=0.5)
-    cutoff_label = f'$A_D \\approx {int(ad_cutoff)}$ Å² cutoff'
-    ax1.axhline(ad_cutoff, color='red', linestyle='--', linewidth=1.2, label=cutoff_label)
-    ax1.set_ylabel('$A_D$ (Å²)', fontsize=10)
-    ax1.set_title('Figure 2. Estimated $A_D$ and relative partition term', fontsize=11)
-    ax1.legend(loc='upper right', fontsize=8)
-    ax1.set_ylim(0, max(a_d) * 1.1)
-
-    ax2.bar(x, rel, color=colors, edgecolor='black', linewidth=0.5)
-    ax2.set_ylabel('Relative $P_{\\mathrm{partition}}$', fontsize=10)
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(labels, rotation=60, ha='right', fontsize=8)
-    ax2.set_xlabel('Drug', fontsize=10)
-    ax2.set_yscale('log')
-
-    legend_elements = [Patch(facecolor='#1f77b4', edgecolor='black', label='BBB+'),
-                       Patch(facecolor='#ff7f0e', edgecolor='black', label='BBB-')]
-    ax2.legend(handles=legend_elements, loc='upper right', fontsize=8)
-
-    fig.tight_layout()
-    fig2_path = OUTPUT_DIR / 'figure2_descriptor_values.png'
-    fig.savefig(fig2_path, dpi=dpi, bbox_inches='tight')
-    plt.close(fig)
-
-    # ---- Interactive plot data for Elsevier Interactive Plot Viewer ----
     fig2_data_path = OUTPUT_DIR / 'figure2_descriptor_values.csv'
     with open(fig2_data_path, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)
@@ -335,42 +262,8 @@ def generate_figures(df, params):
         for d, ad_val, rel_val in zip(df, a_d, rel):
             writer.writerow([d['drug'], d['bbb_status'], ad_val, rel_val])
 
-    # ---- Editable PPTX ----
-    prs = Presentation()
-    prs.slide_width = Inches(get_param(params, 'PPTX_WIDTH_IN', as_float=True))
-    prs.slide_height = Inches(get_param(params, 'PPTX_HEIGHT_IN', as_float=True))
-
-    def add_fig_slide(img_path, title_text, caption_text):
-        slide = prs.slides.add_slide(prs.slide_layouts[6])
-        title = slide.shapes.add_textbox(Inches(0.5), Inches(0.3), Inches(12.3), Inches(0.6))
-        tf = title.text_frame
-        tf.text = title_text
-        p = tf.paragraphs[0]
-        p.font.size = Pt(20)
-        p.font.bold = True
-        p.alignment = PP_ALIGN.LEFT
-
-        slide.shapes.add_picture(str(img_path), Inches(0.8), Inches(1.0), height=Inches(5.3))
-
-        cap = slide.shapes.add_textbox(Inches(0.5), Inches(6.5), Inches(12.3), Inches(0.8))
-        tf2 = cap.text_frame
-        tf2.text = caption_text
-        tf2.word_wrap = True
-        p2 = tf2.paragraphs[0]
-        p2.font.size = Pt(12)
-        p2.alignment = PP_ALIGN.LEFT
-
-    add_fig_slide(fig1_path,
-                  'Figure 1. Unified three-gate model of BBB permeability',
-                  'A molecule must pass three gates: desolvation (P_desolv), membrane partition (P_partition), and net transmembrane flux (P_net flux).')
-    add_fig_slide(fig2_path,
-                  'Figure 2. Estimated A_D and relative partition term',
-                  f'Estimated membrane cross-sectional area and the relative partition term from the lateral bilayer pressure model. Dashed line marks the A_D ≈ {int(ad_cutoff)} Å² cutoff.')
-
-    pptx_path = OUTPUT_DIR / 'figures.pptx'
-    prs.save(str(pptx_path))
-
-    return fig1_path, fig2_path, pptx_path, fig2_data_path
+    figs['fig2_data'] = fig2_data_path
+    return figs
 
 
 # ---------------------------------------------------------------------------
@@ -446,6 +339,11 @@ def _markdown_table(rows, widths=None):
 
 def make_tables_docx(md_text):
     """Create a separate editable docx containing the resolved tables."""
+    titles = {
+        1: 'Descriptor values and references',
+        2: 'Conventional vs unconventional descriptors',
+        3: 'Clinical paradoxes explained by the unified model',
+    }
     lines = md_text.splitlines()
     out_lines = []
     table_index = 0
@@ -454,11 +352,7 @@ def make_tables_docx(md_text):
         if line.startswith('|'):
             if not in_table:
                 table_index += 1
-                title = (
-                    'Descriptor values and references'
-                    if table_index == 1
-                    else 'Conventional vs unconventional descriptors'
-                )
+                title = titles.get(table_index, f'Table {table_index}')
                 out_lines.append(f'# Table {table_index}. {title}\n')
                 in_table = True
             out_lines.append(line)
@@ -478,6 +372,16 @@ def make_tables_docx(md_text):
 def run_pandoc(md_path, docx_path):
     cmd = [str(PANDOC), Path(md_path).name, '-o', Path(docx_path).name, '--mathml']
     subprocess.run(cmd, cwd=str(OUTPUT_DIR), check=True)
+
+
+def anonymize_md(md_text):
+    """Remove author/affiliation/date from YAML frontmatter for anonymized submission."""
+    # Remove author block and date line; keep title and the frontmatter delimiters.
+    md_text = re.sub(r'^author:\s*\n(?:  - .*(?:\n|$))*(?:  - .*(?:\n|$))?', '', md_text, flags=re.MULTILINE)
+    md_text = re.sub(r'^date:.*\n?', '', md_text, flags=re.MULTILINE)
+    # Collapse empty lines between the two --- delimiters to keep the YAML block valid.
+    md_text = re.sub(r'^---\n(?:\n*)', '---\n', md_text, flags=re.MULTILINE)
+    return md_text
 
 
 def build_doc(template_name, out_name, replacements, citer, write_md=True):
@@ -519,7 +423,7 @@ The revised manuscript addresses the six main points raised by Reviewer #2. It i
 ## 3. Figures and tables
 - Table 1 is essential and present; it contains the descriptor values and references requested by the reviewer.
 - Table 2 clarifies conventional vs unconventional classification.
-- Figure 1 schematizes the model; Figure 2 visualises the size dependence. Both are cited in the text.
+- Six figures (Figure 1 discriminatory ranking, Figure 2 drug × factor matrix, Figure 3 A_D scatter, Figure 4 unified model, Figure 5 clinical paradoxes, Figure 6 applications framework) and three tables (Tables 1–3) are cited in the text.
 - Figures are also provided as a separate editable .pptx and as individual PNG files.
 
 ## 4. Reproducibility
@@ -569,7 +473,7 @@ def run_checks(docx_path, md_path, label=''):
         if phrase.lower() in md_text.lower():
             report.append(f'WARNING: forbidden phrase found: {phrase}')
 
-    for fig_tbl in ['Figure 1', 'Figure 2', 'Table 1', 'Table 2']:
+    for fig_tbl in ['Figure 1', 'Figure 2', 'Figure 3', 'Figure 4', 'Figure 5', 'Figure 6', 'Table 1', 'Table 2', 'Table 3']:
         if fig_tbl in md_text:
             report.append(f'{fig_tbl} cited in text: yes')
         else:
@@ -596,36 +500,55 @@ def main():
 
     values = compute_values(df, params)
 
-    fig1, fig2, pptx, fig2_data = generate_figures(df, params)
+    figs = generate_figures(df, params)
+    fig1, fig2, fig3, fig4, fig5, fig6, pptx, fig2_data = (
+        figs['fig1'], figs['fig2'], figs['fig3'], figs['fig4'], figs['fig5'], figs['fig6'],
+        figs['pptx'], figs['fig2_data'],
+    )
     ga_png, ga_pptx = make_graphical_abstract.make_graphical_abstract(OUTPUT_DIR)
 
     table1_md = make_table1(df)
     table2_md = make_table2(params, values)
+    table3_md = manuscript_figures.make_table3(df, params)
 
     citer = Citer(refs)
-    fig1_rel = str(fig1.relative_to(OUTPUT_DIR))
-    fig2_rel = str(fig2.relative_to(OUTPUT_DIR))
+    rel = lambda p: str(Path(p).relative_to(OUTPUT_DIR))
+    ad_cutoff = fmt_value(get_param(params, 'AD_CUTOFF_A2', as_float=True))
 
     manuscript_replacements = {
         'TABLE1': table1_md,
         'TABLE2': table2_md,
-        'FIGURE1': f'![Figure 1. Unified three-gate model of BBB permeability]({fig1_rel}){{width=90%}}',
-        'FIGURE2': f'![Figure 2. Estimated $A_D$ and relative partition term]({fig2_rel}){{width=90%}}',
+        'TABLE3': table3_md,
+        'FIGURE1': f'![Figure 1. Discriminatory power ranking of unconventional and conventional descriptors]({rel(fig1)}){{width=90%}}',
+        'FIGURE2': f'![Figure 2. Drug × factor evaluation matrix]({rel(fig2)}){{width=90%}}',
+        'FIGURE3': f'![Figure 3. BBB permeability as a function of estimated A_D]({rel(fig3)}){{width=90%}}',
+        'FIGURE4': f'![Figure 4. Unified three-component model of BBB permeability]({rel(fig4)}){{width=90%}}',
+        'FIGURE5': f'![Figure 5. Unified model decomposition for six clinical cases]({rel(fig5)}){{width=90%}}',
+        'FIGURE6': f'![Figure 6. Conceptual framework for applying the unified model to drug-design strategies]({rel(fig6)}){{width=90%}}',
         'REFERENCES': '{{REFERENCES}}',
     }
     manuscript_replacements.update(values)
 
-    main_docx, main_md = build_doc('manuscript.md', 'main_manuscript.docx', manuscript_replacements, citer, write_md=True)
+    # Build the full, internally editable manuscript first (with author metadata)
+    _, author_md = build_doc('manuscript.md', 'main_manuscript_with_author.docx', manuscript_replacements, citer, write_md=True)
 
-    # Resolve references
-    main_md = main_md.replace('{{REFERENCES}}', citer.reference_list())
+    # Resolve references once and create anonymized versions for delivery
+    author_md = author_md.replace('{{REFERENCES}}', citer.reference_list())
     filled_md_path = OUTPUT_DIR / 'manuscript_filled.md'
     with open(filled_md_path, 'w', encoding='utf-8') as f:
-        f.write(main_md)
-    run_pandoc(filled_md_path, main_docx)
+        f.write(author_md)
 
-    # Submission version: figures removed (uploaded separately per EJPS guidelines)
-    sub_md = re.sub(r'!\[.*?\]\(.*?\)\{width=90%\}\n?', '', main_md)
+    anon_md = anonymize_md(author_md)
+    anon_md_path = OUTPUT_DIR / 'manuscript_anonymized.md'
+    with open(anon_md_path, 'w', encoding='utf-8') as f:
+        f.write(anon_md)
+
+    # Main anonymized manuscript with inline figures (matches the requested old-format style)
+    main_docx = OUTPUT_DIR / 'main_manuscript.docx'
+    run_pandoc(anon_md_path, main_docx)
+
+    # Journal submission version: anonymized and without embedded figures
+    sub_md = re.sub(r'!\[.*?\]\(.*?\)\{width=90%\}\n?', '', anon_md)
     sub_md_path = OUTPUT_DIR / 'manuscript_submission.md'
     with open(sub_md_path, 'w', encoding='utf-8') as f:
         f.write(sub_md)
@@ -633,7 +556,7 @@ def main():
     run_pandoc(sub_md_path, sub_docx)
 
     # Separate tables docx
-    tables_docx = make_tables_docx(main_md)
+    tables_docx = make_tables_docx(anon_md)
 
     # Response letter
     resp_docx, _ = build_doc('response_to_reviewers.md', 'response_to_reviewers.docx', values, Citer(refs), write_md=False)
@@ -651,7 +574,7 @@ def main():
         shutil.copy(chemical_compounds_src, chemical_compounds_path)
 
     # Checks
-    check_report = run_checks(main_docx, filled_md_path, label='main manuscript')
+    check_report = run_checks(main_docx, anon_md_path, label='main manuscript')
     check_report += '\n\n' + run_checks(sub_docx, sub_md_path, label='submission manuscript')
     check_path = OUTPUT_DIR / 'build_check.txt'
     with open(check_path, 'w', encoding='utf-8') as f:
@@ -662,17 +585,17 @@ def main():
     zip_path = OUTPUT_DIR / 'submission_package.zip'
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         files_to_zip = [main_docx, sub_docx, resp_docx, cover_docx, tables_docx, pptx, ga_png, ga_pptx,
-                        fig1, fig2, fig2_data,
+                        fig1, fig2, fig3, fig4, fig5, fig6, fig2_data,
                         DATA_DIR / 'descriptor_table.csv', DATA_DIR / 'references.csv', DATA_DIR / 'parameters.csv',
-                        eval_path, check_path, filled_md_path, sub_md_path]
+                        eval_path, check_path, anon_md_path, sub_md_path]
         if chemical_compounds_path.exists():
             files_to_zip.append(chemical_compounds_path)
         for f in files_to_zip:
             zf.write(f, arcname=f.name)
 
     print(f'\nDone. Outputs in {OUTPUT_DIR}')
-    print(f'  Main manuscript: {main_docx.name}')
-    print(f'  Submission manuscript (no embedded figures): {sub_docx.name}')
+    print(f'  Main manuscript (anonymized, inline figures): {main_docx.name}')
+    print(f'  Submission manuscript (anonymized, no embedded figures): {sub_docx.name}')
     print(f'  Response letter: {resp_docx.name}')
     print(f'  Cover letter: {cover_docx.name}')
     print(f'  Tables docx: {tables_docx.name}')

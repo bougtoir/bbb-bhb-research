@@ -4,16 +4,27 @@ author:
   - "Tatsuki Onishi"
   - "[Affiliation to be inserted]"
 date: "19 August 2026"
-abstract: |
-  **Background.** Predicting blood–brain barrier (BBB) permeability remains a central problem in central nervous system (CNS) drug design. Conventional rules such as Lipinski's rule of five and related CNS guidelines describe physicochemical boundaries but do not guarantee permeability.
-  **Objective.** We examined how a set of molecular descriptors—including membrane cross-sectional area, collision cross-section, P-glycoprotein (P-gp) net flux, desolvation cost, chameleonicity, 3D polar surface area, dipole moment/polarizability, LUMO energy, substructural synergy, and lateral bilayer pressure—can be integrated into a single probabilistic framework.
-  **Methods.** A curated set of {{N_DRUGS}} drugs ({{N_BBB_POS}} BBB-permeable, {{N_BBB_NEG}} BBB-poor) was compiled from the published literature. Descriptor values were estimated from public structural data, published binding/efflux data, and validated biophysical relationships; the relative membrane-partition term was calculated from the lateral bilayer pressure model.
-  **Results.** Membrane cross-sectional area ($A_D$) and P-gp net flux discriminated BBB-positive from BBB-negative compounds most clearly. Desolvation cost distinguished morphine from heroin and codeine, and lateral bilayer pressure provided a physical rationale for the exponential size dependence of membrane partitioning. Caffeine, ethanol, and nicotine, all with molecular weight below {{MW_PARACELLULAR}} Da, are examples of small molecules that can cross by paracellular or small-molecule diffusion, so their permeability does not rely solely on lipid-membrane partitioning.
-  **Conclusions.** BBB permeability can be framed as the product of three gated probabilities: desolvation, membrane partition, and net transmembrane flux. The model is a heuristic synthesis intended to guide hypothesis generation; the small, literature-derived dataset and the illustrative nature of the calculations mean that all therapeutic suggestions are strictly indicative.
-keywords: blood–brain barrier, molecular descriptors, P-glycoprotein, membrane cross-sectional area, chameleonicity, local anesthetics
 ---
 
-# Introduction
+# Highlights
+
+- A unified three-gate probabilistic framework treats BBB permeability as the product of desolvation, membrane partition, and net transmembrane flux, integrating both conventional and unconventional molecular descriptors.
+- Membrane cross-sectional area ($A_D$) and P-glycoprotein net flux are the most discriminatory unconventional factors in the curated {{N_DRUGS}}-drug dataset, clearly separating BBB-permeable from most BBB-poor compounds.
+- The model explains classic BBB paradoxes within a single picture: caffeine, ethanol, and nicotine can cross partly by paracellular or small-molecule diffusion at very low molecular weight; loperamide is excluded by strong P-gp efflux despite high lipophilicity; and heroin, codeine, and morphine differ mainly by desolvation cost.
+- Conventional descriptors (MW, logP, TPSA, HBD/HBA, dipole moment/polarizability, LUMO, 3D-PSA) are distinguished from unconventional membrane- and transport-specific descriptors, with explicit definitions and supporting references provided in a dedicated table.
+- Therapeutic directions for reduced-CNS-toxicity local anesthetics, micellar formulations, and chelation-based effect modification are presented as hypothesis-generating, indicative ideas that require experimental validation in larger datasets.
+
+# Abstract
+
+**Background.** Predicting blood–brain barrier (BBB) permeability remains a central problem in central nervous system (CNS) drug design. Conventional rules such as Lipinski's rule of five and related CNS guidelines describe physicochemical boundaries but do not guarantee permeability.
+**Objective.** We examined how a set of molecular descriptors—including membrane cross-sectional area, collision cross-section, P-glycoprotein (P-gp) net flux, desolvation cost, chameleonicity, 3D polar surface area, dipole moment/polarizability, LUMO energy, substructural synergy, and lateral bilayer pressure—can be integrated into a single probabilistic framework.
+**Methods.** A curated set of {{N_DRUGS}} drugs ({{N_BBB_POS}} BBB-permeable, {{N_BBB_NEG}} BBB-poor) was compiled from the published literature. Descriptor values were estimated from public structural data, published binding/efflux data, and validated biophysical relationships; the relative membrane-partition term was calculated from the lateral bilayer pressure model.
+**Results.** Membrane cross-sectional area ($A_D$) and P-gp net flux discriminated BBB-positive from BBB-negative compounds most clearly. Desolvation cost distinguished morphine from heroin and codeine, and lateral bilayer pressure provided a physical rationale for the exponential size dependence of membrane partitioning. Caffeine, ethanol, and nicotine, all with molecular weight below {{MW_PARACELLULAR}} Da, are examples of small molecules that can cross by paracellular or small-molecule diffusion, so their permeability does not rely solely on lipid-membrane partitioning.
+**Conclusions.** BBB permeability can be framed as the product of three gated probabilities: desolvation, membrane partition, and net transmembrane flux. The model is a heuristic synthesis intended to guide hypothesis generation; the small, literature-derived dataset and the illustrative nature of the calculations mean that all therapeutic suggestions are strictly indicative.
+
+**Keywords:** blood–brain barrier, molecular descriptors, P-glycoprotein, membrane cross-sectional area, chameleonicity, local anesthetics
+
+# 1. Introduction
 
 The blood–brain barrier (BBB) is a specialized microvascular endothelium that limits the entry of most xenobiotics into the brain{{CITE:PARDIDGE2012}}. Medicinal chemists therefore need descriptors that predict whether a small molecule can cross this barrier. The most widely used guidelines are Lipinski's rule of five, developed to identify orally administered compounds with potential absorption problems, and the analogous CNS rules that emphasize moderate molecular weight, moderate lipophilicity, and low polar surface area{{CITE:LIPINSKI2001,RANKOVIC2015}}.
 
@@ -23,13 +34,13 @@ Several well-known cases expose the limitations of a rule-of-five-only approach.
 
 These paradoxes suggest that BBB permeability is governed by at least three partly independent gates: the cost of shedding the hydration shell (desolvation), the ability to partition into and diffuse through the lipid membrane (partition), and the balance between passive influx and active efflux (net flux){{CITE:FISCHER1998,FONG2015}}. In this paper we integrate these descriptors into a unified probabilistic model and discuss how the framework may inform the design of local anesthetics, micellar formulations, and metal-chelator therapies.
 
-# Methods
+# 2. Approach and Methodology
 
-## Dataset
+## 2.1 Selection of Drugs
 
 We compiled a literature-based dataset of {{N_DRUGS}} drugs: {{N_BBB_POS}} reported as BBB-permeable and {{N_BBB_NEG}} reported as BBB-poor (Table 1). The list was chosen because it contains classic CNS drugs as well as explicit counter-examples to simple logP/molecular-weight rules. Molecular weights (MW), logP values, hydrogen-bond donors (HBD), hydrogen-bond acceptors (HBA), and topological polar surface area (TPSA) were taken from public chemical databases and standard compilations.
 
-## Descriptors and their classification
+## 2.2 Unconventional Descriptors Evaluated
 
 We distinguished **conventional** descriptors—commonly found in quantitative structure–activity relationship (QSAR) models and derived from 2D/3D structure—from **unconventional** descriptors that capture membrane-specific or dynamic properties (Table 2).
 
@@ -59,7 +70,15 @@ where $K_{lw}$ is the lipid–water partition coefficient, $K_{aw}$ is the air�
 
 **3D-PSA** is a conformationally resolved version of polar surface area. It can improve over static TPSA when intramolecular hydrogen bonds shield polar groups{{CITE:SHITYAKOV2013}}.
 
-## Unified model
+{{TABLE1}}
+
+## 2.3 Evaluation Criteria
+
+Each factor was evaluated for: (a) BBB+/BBB- discriminatory power (ability to separate permeable from impermeable drugs); (b) independence from conventional descriptors (logP, MW, TPSA); (c) practical measurability; and (d) clinical utility. Ratings were assigned qualitatively and are reported in Table 2 and Figure 1.
+
+{{TABLE2}}
+
+## 2.4 Unified Model
 
 We express the overall probability of BBB permeation as the product of three conditional probabilities:
 
@@ -73,71 +92,95 @@ $$P_{\mathrm{partition}}^{\mathrm{rel}}(A_D) = \exp\left[-\frac{\pi_{bi}}{kT}\le
 
 with $A_{D,\mathrm{ref}} = {{A_REF}}$ Å² (ethanol, the smallest reference), $\pi_{bi} = {{PI_BI_MN_M}}\ \mathrm{mN/m} = {{PI_BI_N_M}}\ \mathrm{N/m}$, and $kT = {{KB}}\ \mathrm{J/K} \times {{TEMP_K}}\ \mathrm{K} = {{KT_J}}\ \mathrm{J}$. These values are normalized and are intended only to visualize the exponential relationship; they are not calibrated experimental permeabilities.
 
-## Applications
-
 The therapeutic sections are presented as indicative, hypothesis-generating directions derived from the model, not as validated clinical recommendations.
 
-# Results
+# 3. Results
 
-{{TABLE1}}
+## 3.1 Factor Discriminatory Power
 
-Table 1 reports the descriptor values and the key literature sources for the {{N_DRUGS}} drugs. Figure 1 presents the unified three-gate model schematically, and Figure 2 shows the estimated $A_D$ values and the corresponding relative partition term for each compound.
+Figure 1 summarizes the discriminatory power of all descriptors. Membrane cross-sectional area ($A_D$) and P-gp net flux achieved the highest ratings, followed by desolvation energy, lateral bilayer pressure, 3D-PSA, and CCS. The conventional descriptors MW, logP, and TPSA remained useful boundary conditions but did not, by themselves, resolve the paradoxes noted in the Introduction.
 
 {{FIGURE1}}
 
+## 3.2 Drug × Factor Evaluation Matrix
+
+Figure 2 presents the comprehensive evaluation matrix of all {{N_DRUGS}} drugs against the descriptors. BBB+ drugs consistently show favorable scores across the top-tier factors (A_D, net flux, desolvation), while BBB- drugs show unfavorable profiles in at least one critical factor.
+
 {{FIGURE2}}
 
-Two descriptors dominate the separation between BBB-permeable and BBB-poor compounds. First, all BBB-positive drugs have estimated $A_D$ values below about {{AD_CUTOFF}} Å², whereas the BBB-negative drugs that are excluded by size ({{BBB_MINUS_SIZE_LIST}}) have $A_D$ values at or above this range. {{BBB_MINUS_NONSIZE_CLAUSE}} Second, P-gp substrate status explains several otherwise paradoxical cases: loperamide is highly lipophilic but is a strong P-gp substrate; loratadine and cetirizine are second-generation antihistamines whose P-gp-mediated efflux limits CNS entry{{CITE:SCHINKEL1996,CHEN2003,LINNET2008}}.
+## 3.3 Membrane Cross-Sectional Area ($A_D$) as Primary Determinant
 
-Caffeine, ethanol, and nicotine are the smallest BBB-positive compounds in the dataset (all MW < {{MW_PARACELLULAR}} Da), a size range in which paracellular or small-molecule diffusion is plausible and does not require high lipophilicity or a large membrane-partition coefficient{{CITE:ABRAHAM2004,PARDIDGE2012}}. Therefore, their inclusion does not imply that they satisfy a conventional Lipinski/CNS rule; rather, they illustrate that very small molecules can bypass some of the lipid-membrane barriers.
+All BBB-positive drugs in the present dataset have estimated $A_D$ values below about {{AD_CUTOFF}} Å², whereas the BBB-negative drugs that are excluded by physical barriers have $A_D$ values at or above this range (Figure 3). Notably, this factor resolves the apparent paradox of caffeine (logP = -0.07, $A_D$ ~ 42 Å², BBB+) versus loperamide (logP = 4.77, $A_D$ ~ 90 Å², BBB-).
 
-Desolvation cost distinguishes morphine from heroin and codeine. Morphine has two hydroxyl groups (HBD = 2), a rigid pentacyclic scaffold, and a measurable P-gp efflux component; these features give it low but non-zero BBB permeability{{CITE:XIE1999,FONG2015}}. Acetylation of morphine to heroin removes the hydroxyl HBDs, lowers desolvation cost, and markedly increases BBB permeability despite an increase in molecular weight{{CITE:FONG2015}}. Methylation to codeine is intermediate.
+{{FIGURE3}}
 
-Diazepam represents a near-optimal combination: small $A_D$, no HBD, non-P-gp substrate, and a planar benzodiazepine scaffold. Chlorpromazine and haloperidol also cross, but their larger $A_D$ places them closer to the cutoff.
+## 3.4 Unified Three-Component Model
 
-{{TABLE2}}
+Based on the present analysis, BBB permeability can be modeled as the product of three sequential probabilities (Figure 4). $P_{\mathrm{desolv}}$ is the desolvation probability, $P_{\mathrm{partition}}$ is the membrane partition probability, and $P_{\mathrm{net\,flux}}$ is the net flux probability.
 
-Table 2 summarizes the conventional/unconventional classification and our assessment of discriminatory utility for each descriptor.
+{{FIGURE4}}
 
-# Discussion
+## 3.5 Clinical Paradoxes Explained by the Unified Model
 
-## Re-interpreting conventional and unconventional descriptors
+The model resolves several clinical paradoxes that conventional logP/MW-based models cannot explain (Figure 5, Table 3). Caffeine is small (MW < 200 Da) and has a very small $A_D$, so it can cross by paracellular or small-molecule diffusion even though its logP is low. Loperamide has a high logP but is a strong P-gp substrate and has $A_D$ > 80 Å², so its net flux is strongly negative. Heroin and codeine are derived from morphine but have fewer hydroxyl HBDs and therefore lower desolvation cost; the product $P_{BBB}$ is markedly higher for heroin than for morphine.
+
+{{FIGURE5}}
+
+{{TABLE3}}
+
+# 4. Discussion
+
+## 4.1 Re-interpreting Conventional and Unconventional Descriptors
 
 The classification used here distinguishes conventional descriptors—MW, logP, TPSA, HBD, HBA, dipole moment/polarizability, LUMO energy, and 3D-PSA—from unconventional descriptors. The conventional set is derived directly from 2D or 3D structure and is commonly used in QSAR models{{CITE:LIPINSKI2001,WANAT2023,SHITYAKOV2013,MONTGOMERY2024}}. The unconventional set—$A_D$, CCS, P-gp net flux, chameleonicity/ΔPSA, lateral bilayer pressure, and substructural synergy—captures membrane-specific, dynamic, or transport-related behavior. The latter are included because they explain cases that conventional descriptors alone cannot.
 
-The reference for lateral bilayer pressure is Fischer, Gottschlich and Seelig's 1998 study, which measured $\pi_{bi} \approx {{PI_BI_MN_M}}\ \mathrm{mN/m}$ and derived the exponential relationship between $A_D$ and membrane partitioning{{CITE:FISCHER1998}}. The reference for substructural synergy is Lee, Jun, Kim and colleagues' 2025 analysis of fragment combinations in BBB-permeable molecules{{CITE:LEE2025}}.
+The reference for lateral bilayer pressure is Fischer, Gottschlich and Seelig's 1998 study, which measured $\pi_{bi} \approx {{PI_BI_MN_M}}\ \mathrm{mN/m}$ and derived the exponential relationship between $A_D$ and membrane partitioning{{CITE:FISCHER1998}}. The reference for substructural synergy is Lee, Jun, Kim and colleagues' 2025 analysis of fragment combinations in BBB-penetrant molecules{{CITE:LEE2025}}.
 
-## Strengths and limitations of the unified model
+## 4.2 Strengths and Limitations of the Unified Model
 
 The three-gate model is a heuristic framework, not a fitted predictive equation. Its strength is conceptual: it links desolvation, membrane partitioning, and efflux into a single multiplicative probability and thereby explains caffeine, loperamide, morphine/heroin/codeine, diazepam, and the antihistamine pairs within one coherent picture.
 
 The limitations must be emphasized. The dataset contains only {{N_DRUGS}} compounds, so any quantitative claim is tentative. Caffeine, ethanol, and nicotine are small enough that their permeability may be dominated by paracellular or small-molecule diffusion rather than lipid partitioning. L-DOPA and gabapentin are not passive diffusion cases; they cross via LAT1 or related transporters{{CITE:FONG2015}}. The descriptor values in Table 1 are estimated from published structures and reports, not measured in a single experimental series, so they should be treated as a curated synthesis rather than a validation dataset. The model also omits other transporters, plasma-protein binding, and metabolism.
 
-## Local anesthetic design
+## 4.3 Local Anesthetic Design
 
 Local anesthetics are deliberately designed to produce peripheral nerve block with limited CNS entry. The model suggests that high $A_D$, high desolvation cost, or P-gp substrate status would reduce passive BBB permeation. Low BBB penetration, however, does not guarantee freedom from CNS side effects. Morphine illustrates this clearly: even with low BBB permeability, its high affinity for CNS opioid receptors means that the small fraction that does enter the brain is pharmacologically active{{CITE:XIE1999,RANKOVIC2015}}. A local anesthetic with similarly high CNS receptor affinity could produce unwanted central effects at low brain concentrations. Thus, the design suggestions here are indicative and must be combined with receptor-binding and toxicity data.
 
-## Micellar formulation
+## 4.4 Micellar Formulation
 
 Encapsulating a drug in micelles, liposomes, or other nanocarriers can change the rate-limiting step from passive transcellular diffusion to carrier release, endothelial uptake, or BBB disruption/receptor-mediated transport{{CITE:HU2025,MA2023}}. The unified model still applies, but the relevant descriptors become those of the drug–carrier system (size, surface charge, release kinetics, targeting ligand) rather than the free molecule. Because carrier design introduces additional variables, any BBB-penetration claim requires formulation-specific data; we therefore present this application as a conceptual direction.
 
-## Chelation-based effect modification
+## 4.5 Chelation-Based Effect Modification
 
 Metal chelators such as deferoxamine (DFO) have mixed reports of BBB permeability. DFO is a relatively large, hydrophilic molecule, and systemic administration gives poor brain exposure; nevertheless, intranasal or encapsulated formulations can increase CNS delivery and have shown neuroprotective effects in preclinical models{{CITE:FARR2020}}. Chelation-based therapy therefore modifies the effective BBB penetration at the formulation/dosing level rather than by changing the intrinsic molecular descriptors. This application is also strictly indicative.
 
-## Relation to broader computational efforts
+## 4.6 Relation to Broader Computational Efforts
 
 Recent machine-learning studies that integrate multiple descriptors from standardized databases support the view that no single descriptor is sufficient for BBB prediction{{CITE:SPIELVOGEL2025}}. The unified model provides a mechanistic rationale for why such integrative approaches outperform single-parameter rules.
 
-# Conclusion
+## 4.7 Translational Design Framework
+
+The three-gate model can be summarized as a scaffold for the three indicative application areas discussed above (Figure 6). Micellar encapsulation changes the rate-limiting step from intrinsic membrane permeation to carrier release, endothelial uptake, or receptor-mediated targeting. Metal-chelator conjugates modify effective CNS exposure through formulation and route rather than by altering intrinsic molecular descriptors. Local-anesthetic optimization must balance membrane-exclusion descriptors, such as high $A_D$ or P-gp substrate status, against CNS receptor affinity, because very high affinity can produce central effects even at low brain concentrations. Because each application introduces variables outside the intrinsic descriptors, the framework is intended only as a conceptual guide, not as a validated design protocol.
+
+{{FIGURE6}}
+
+# 5. Conclusions
 
 BBB permeability is better understood as the product of three gated probabilities—desolvation, membrane partition, and net transmembrane flux—than as a simple pass/fail rule. Membrane cross-sectional area and P-gp net flux provide the strongest discrimination in this small, literature-derived dataset, while desolvation cost and lateral bilayer pressure give physical explanations for several classic BBB paradoxes. The therapeutic applications to local anesthetics, micellar formulations, and chelation therapy are hypothesis-generating and require experimental validation. The present framework treats Lipinski/CNS rules as guidelines, clarifies the conventional versus unconventional descriptor classes, reports all descriptor values with references, and limits the clinical implications to hypothesis-generating directions.
 
-# Figure legends
+# Figure Legends
 
-**Figure 1.** The unified three-gate model of BBB permeability. A molecule must first shed its hydration shell ($P_{\mathrm{desolv}}$), then partition into and diffuse through the lipid bilayer ($P_{\mathrm{partition}}$), and finally reach a positive net flux across the endothelial layer ($P_{\mathrm{net\,flux}} = J_{\mathrm{influx}} - J_{\mathrm{efflux}}$). $A_D$ = membrane cross-sectional area; $\pi_{bi}$ = lateral bilayer pressure; P-gp = P-glycoprotein.
+**Figure 1.** Discriminatory power ranking of unconventional and conventional descriptors. Ratings are overall qualitative assessments based on the ability of each descriptor to separate BBB-permeable from BBB-poor compounds in the present dataset; see Table 2 for definitions and references.
 
-**Figure 2.** Estimated membrane cross-sectional area ($A_D$) and the corresponding relative partition term, $P_{\mathrm{partition}}^{\mathrm{rel}}$, computed from the lateral bilayer pressure model for the {{N_DRUGS}} drugs. BBB-permeable compounds are shown in blue, BBB-poor compounds in orange. The dashed line marks the $A_D \approx {{AD_CUTOFF}}$ Å² cutoff above which membrane partitioning drops sharply.
+**Figure 2.** Drug × factor evaluation matrix. Symbols: + favorable, o neutral, − weak, x unfavorable. Rows are ordered by BBB status (BBB+ drugs above the black line, BBB- drugs below). Columns correspond to the descriptors listed in Table 2. The matrix is intended as a visual summary of the dataset, not as a validated prediction model.
+
+**Figure 3.** BBB permeability as a function of estimated membrane cross-sectional area ($A_D$). BBB+ drugs (green circles) have $A_D$ below about {{AD_CUTOFF}} Å²; BBB- drugs (red crosses) that are excluded by size have $A_D$ at or above this range. Vertical dashed lines indicate the {{AD_LOW}} Å², {{AD_CUTOFF}} Å², and {{AD_HIGH}} Å² boundaries from Fischer and Seelig.
+
+**Figure 4.** Schematic representation of the unified three-component BBB permeability model. A molecule must pass three sequential gates—desolvation ($P_{\mathrm{desolv}}$), membrane partition ($P_{\mathrm{partition}}$), and net transmembrane flux ($P_{\mathrm{net\,flux}}$)—to reach brain parenchyma.
+
+**Figure 5.** Unified model decomposition for six clinical cases. (A) Individual component probabilities estimated from the heuristic scoring rules described in Methods. (B) Product $P_{BBB}$ values. Green bars indicate BBB-permeable drugs; red bars indicate BBB-poor drugs. Values are relative and illustrative, not calibrated experimental permeabilities.
+
+**Figure 6.** Conceptual framework for applying the unified BBB permeability model to drug-design strategies: micellar encapsulation, metal-chelator delivery, and local-anesthetic optimization. All three directions are indicative and require formulation-specific or receptor-binding data.
 
 # References
 
